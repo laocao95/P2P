@@ -11,8 +11,8 @@ public class peerProcess {
 		
 		peerConnectionList = new ArrayList<>();
 		
-		serverInfo = PeerInfoController.getInstance().getPeerInfoById(id);
-		PeerInfoController.getInstance().setMyInfo(serverInfo);
+		serverInfo = PeerInfoManager.getInstance().getPeerInfoById(id);
+		PeerInfoManager.getInstance().setMyInfo(serverInfo);
 		//connect to peers before this server
 		connectToBeforePeer();
 		
@@ -20,7 +20,7 @@ public class peerProcess {
 		try {
 			
 			serverSocket = new ServerSocket(serverInfo.getPort());
-			for (int i = 0; i < PeerInfoController.getInstance().getPeersAfter(serverInfo).size(); i++) {
+			for (int i = 0; i < PeerInfoManager.getInstance().getPeersAfter(serverInfo).size(); i++) {
 				//System.out.println("wait for connect");
 				
 				Socket socket = serverSocket.accept();
@@ -38,7 +38,7 @@ public class peerProcess {
 	public void connectToBeforePeer() {
 		
 		try {
-			for (PeerInfo peer : PeerInfoController.getInstance().getPeersBefore(serverInfo)) {
+			for (PeerInfo peer : PeerInfoManager.getInstance().getPeersBefore(serverInfo)) {
 				Socket socket = new Socket(peer.getHost(), peer.getPort());
 				peerConnectionList.add(new Connection(socket, peer));
 			}

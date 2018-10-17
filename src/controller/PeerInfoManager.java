@@ -3,11 +3,11 @@ import java.io.*;
 import java.util.*;
 import model.*;
 
-public class PeerInfoController {
-	private static PeerInfoController instance;
+public class PeerInfoManager {
+	private static PeerInfoManager instance;
 	private PeerInfo myInfo;
 	private List<PeerInfo> peerInfoList;
-	private PeerInfoController() {
+	private PeerInfoManager() {
 		try {
 			FileReader reader = new FileReader("./PeerInfo.cfg");
             BufferedReader bufferedReader = new BufferedReader(reader);
@@ -16,7 +16,7 @@ public class PeerInfoController {
             while((str = bufferedReader.readLine()) != null) {
             	String[] peerArgs = str.split(" ");
             	PeerInfo info = new PeerInfo(Integer.parseInt(peerArgs[0]), 
-            			peerArgs[1], Integer.parseInt(peerArgs[2]), peerArgs[3] == "1" ? true : false);
+            			peerArgs[1], Integer.parseInt(peerArgs[2]), peerArgs[3].equals("1") ? true : false);
             	peerInfoList.add(info);
             }
             
@@ -27,9 +27,9 @@ public class PeerInfoController {
 			e.printStackTrace();
 		}
 	}
-	public static PeerInfoController getInstance() {
+	public static PeerInfoManager getInstance() {
 		if (instance == null) {
-			instance = new PeerInfoController();
+			instance = new PeerInfoManager();
 		}
 		return instance;
 	}
