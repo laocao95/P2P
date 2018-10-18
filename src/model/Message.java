@@ -18,17 +18,23 @@ public class Message {
 		
 	}
 	public byte[] toBytes() {
-		//need to check valid
-		int size = 4 + 1 + payload.length;
-		byte[] message = new byte[size];
-		
-		byte messageType = (byte)String.valueOf(type.ordinal()).charAt(0);
-		byte[] messageLength = Util.IntToByte(payload.length + 1);
-		
-		System.arraycopy(messageLength, 0, message, 0, 3);
-		message[4] = messageType;
-		System.arraycopy(payload, 0, message, 5, payload.length);
-		return message;
+		if (payload != null) {
+			int size = 4 + 1 + payload.length;
+			byte[] message = new byte[size];
+			byte[] messageLength = Util.IntToByte(payload.length + 1);
+			byte messageType = (byte)String.valueOf(type.ordinal()).charAt(0);
+			System.arraycopy(messageLength, 0, message, 0, 3);
+			message[4] = messageType;
+			System.arraycopy(payload, 0, message, 5, payload.length);
+			return message;
+		} else {
+			int size = 4 + 1;
+			byte[] message = new byte[size];
+			byte[] messageLength = Util.IntToByte(1);
+			byte messageType = (byte)String.valueOf(type.ordinal()).charAt(0);
+			System.arraycopy(messageLength, 0, message, 0, 3);
+			message[4] = messageType;
+			return message;
+		}
 	}
-
 }

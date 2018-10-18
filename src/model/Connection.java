@@ -166,7 +166,7 @@ public class Connection extends Thread{
 			byte[] typeAndLength = new byte[5];
 			inputStream.read(typeAndLength);
 			
-			int typeIndex = typeAndLength[4];
+			int typeIndex = typeAndLength[4] - '0';
 			
 			MessageType[] typeArray = MessageType.values();
 			MessageType type = typeArray[typeIndex];
@@ -174,15 +174,19 @@ public class Connection extends Thread{
 			byte[] lengthBytes = Arrays.copyOfRange(typeAndLength, 0, 4);
 			int length = Util.Byte2Int(lengthBytes);
 			
-			//length contain message type field which is 1
-			while (inputStream.available() < length - 1) {
-				Thread.sleep(20);
+			Message message;
+			if (length == 1) {
+				message = new Message(type, null);
+			} else {
+				//length contain message type field which is 1
+				while (inputStream.available() < length - 1) {
+					Thread.sleep(20);
+				}
+				byte[] payload = new byte[length - 1];
+				inputStream.read(payload);
+				message = new Message(type, payload);
+
 			}
-			
-			byte[] payload = new byte[length - 1];
-			inputStream.read(payload);
-			
-			Message message = new Message(type, payload);
 			return message;
 		}
 

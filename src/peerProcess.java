@@ -21,7 +21,6 @@ public class peerProcess {
 			
 			serverSocket = new ServerSocket(serverInfo.getPort());
 			for (int i = 0; i < PeerInfoManager.getInstance().getPeersAfter(serverInfo).size(); i++) {
-				//System.out.println("wait for connect");
 				
 				Socket socket = serverSocket.accept();
 				
