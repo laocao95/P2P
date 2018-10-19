@@ -13,6 +13,8 @@ public class Connection extends Thread{
 	private OutputStream outputStream;
 	private Boolean correspondingPeersCompleted = false;
 	private Boolean receivedHandShake = false;
+	private Boolean serverChoke = false;
+	private Boolean clientInterest = false;
 	
 	
 	//check handshake
@@ -61,19 +63,19 @@ public class Connection extends Thread{
 					}
 					break;
 					case CHOKE: {
-						
+						serverChoke = true;
 					}
 					break;
 					case UNCHOKE: {
-						
+						serverChoke = false;
 					}
 					break;
 					case INTERESTED: {
-						
+						clientInterest = true;
 					}
 					break;
 					case NOT_INTERESTED: {
-						
+						clientInterest = false;
 					}
 					break;
 					case HAVE: {
@@ -81,11 +83,19 @@ public class Connection extends Thread{
 					}
 					break;
 					case BITFIELD: {
-						
+						MessageHandler.getInstance().handleBitFieldMessage(this, message);
 					}
 					break;
 					case REQUEST: {
-						
+						//when receive request, check if is choked
+						if (serverChoke == true){
+							//don't reply the request
+						}
+						else
+						{
+							//send requested piece
+						}
+								
 					}
 					break;
 					case PIECE: {

@@ -1,6 +1,7 @@
 package controller;
 
 import model.*;
+import custom.*;
 
 public class MessageHandler {
 	private static MessageHandler instance;
@@ -49,5 +50,10 @@ public class MessageHandler {
 		connect.sendMessage(message);
 		
 		System.out.println("send handshake message to " + connect.getPeerInfo().getId());
+	}
+	
+	public void handleBitFieldMessage(Connection connect, Message message) throws Exception{
+		Message bitField = (Message)message;
+		byte[] payLoad = bitField.getPayload();
 	}
 }
