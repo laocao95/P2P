@@ -79,13 +79,5 @@ public class ArgReader {
 	public int getpieceSize(){
 		return pieceSize;
 	}
-	
-	public static void main(String[] args) {
-		System.out.println(ArgReader.getInstance().getNumberOfPreferredNeighbors());
-		System.out.println(ArgReader.getInstance().getUnchokingInterval());
-		System.out.println(ArgReader.getInstance().getOptimisticUnchokingInterval());
-		System.out.println(ArgReader.getInstance().getfileName());
-		System.out.println(ArgReader.getInstance().getfileSize());
-		System.out.println(ArgReader.getInstance().getpieceSize());
-	}
+
 }
