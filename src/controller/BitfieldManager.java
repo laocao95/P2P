@@ -59,5 +59,9 @@ public class BitfieldManager {
 		}
 		
 	}
+	
+	public int getPieceSize(){
+		return pieceSize;
+	}
 }
 

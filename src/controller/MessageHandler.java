@@ -55,6 +55,15 @@ public class MessageHandler {
 	public void handleBitFieldMessage(Connection connect, Message message) throws Exception{
 		Message bitField = (Message)message;
 		byte[] payLoad = bitField.getPayload();
+		int pieceSize = BitfieldManager.getInstance().getPieceSize();
+		for (int i = 0; i < pieceSize;i++){
+			
+		}
+	}
+	
+	public void handleHaveMessage(Connection connect, Message message) throws Exception{
+		Message have = (Message)message;
+		byte[] payLoad = have.getPayload();
 	}
 	
 	public void handleUnchokedMessage(Connection connect, Message message) throws Exception{
