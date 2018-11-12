@@ -35,7 +35,7 @@ public class BitfieldManager {
 	}
 
 	//for receiving have message
-	synchronized public void updateBitfield(int peerInfo, int pieceNum){
+	synchronized public void updateBitfield(PeerInfo peerInfo, int pieceNum){
 		//othersBitfield[peerID][pieceNum] = true;
 		boolean[] tmp = bitFields.get(peerInfo);
 		tmp[pieceNum] = true;
