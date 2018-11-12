@@ -61,7 +61,7 @@ public class MyTimer extends Thread{
 						Collections.sort(interestedList, new Comparator<Connection>() {
 							@Override
 							public int compare(Connection c1, Connection c2) {
-								return c1.getDownloadingNumOfPeriod() - c2.getDownloadingNumOfPeriod();
+								return c2.getDownloadingNumOfPeriod() - c1.getDownloadingNumOfPeriod();
 							}
 						});
 						//add k fast
