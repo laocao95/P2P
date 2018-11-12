@@ -72,6 +72,9 @@ public class MessageHandler {
 	public void handleHaveMessage(Connection connect, Message message) throws Exception{
 		Message have = (Message)message;
 		byte[] payLoad = have.getPayload();
+		int pieceNum = Util.Byte2Int(payLoad);
+		PeerInfo peerInfo = connect.getPeerInfo()
+		BitfieldManager.getInstance().updateBitfield(peerInfo, pieceNum);
 	}
 	
 	public void handleUnchokedMessage(Connection connect, Message message) throws Exception{
