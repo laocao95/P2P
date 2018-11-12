@@ -2,6 +2,7 @@ package controller;
 
 import model.*;
 import custom.*;
+import custom.Config.MessageType;
 
 public class MessageHandler {
 	private static MessageHandler instance;
@@ -55,5 +56,18 @@ public class MessageHandler {
 	public void handleBitFieldMessage(Connection connect, Message message) throws Exception{
 		Message bitField = (Message)message;
 		byte[] payLoad = bitField.getPayload();
+	}
+	
+	public void handleUnchokedMessage(Connection connect, Message message) throws Exception{
+		int resultOfCAC;
+		resultOfCAC = BitfieldManager.getInstance().compareAndchoose(connect.getPeerInfo());
+		if(resultOfCAC == -1) {
+			System.out.println("No interesting block");
+		}
+		else {
+			byte[] payload = Util.IntToByte(resultOfCAC);
+			Message request = new Message(MessageType.REQUEST, payload);
+			connect.sendMessage(request);
+		}
 	}
 }

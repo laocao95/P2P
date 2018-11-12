@@ -64,10 +64,12 @@ public class Connection extends Thread{
 					break;
 					case CHOKE: {
 						serverChoke = true;
+						System.out.println("[Time]: Peer [peer_ID 1] is choked by [peer_ID 2].");
 					}
 					break;
 					case UNCHOKE: {
 						serverChoke = false;
+						MessageHandler.getInstance().handleUnchokedMessage(this, message);
 					}
 					break;
 					case INTERESTED: {
@@ -93,6 +95,7 @@ public class Connection extends Thread{
 						}
 						else
 						{
+							
 							//send requested piece
 						}
 								
