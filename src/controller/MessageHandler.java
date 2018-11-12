@@ -81,7 +81,8 @@ public class MessageHandler {
 		int resultOfCAC;
 		resultOfCAC = BitfieldManager.getInstance().compareAndchoose(connect.getPeerInfo());
 		if(resultOfCAC == -1) {
-			System.out.println("No interesting block");
+			Message notInterested = new Message(MessageType.NOT_INTERESTED, null);
+			connect.sendMessage(notInterested);
 		}
 		else {
 			byte[] payload = Util.IntToByte(resultOfCAC);
