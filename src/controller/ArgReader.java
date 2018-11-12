@@ -5,8 +5,6 @@ import model.*;
 
 public class ArgReader {
 	private static ArgReader instance;
-	//private PeerInfo myInfo;
-	//private List<PeerInfo> peerInfoList;
 	private int NumberOfPreferredNeighbors;
 	private int UnchokingInterval;
 	private int OptimisticUnchokingInterval;

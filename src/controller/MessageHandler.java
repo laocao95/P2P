@@ -56,8 +56,4 @@ public class MessageHandler {
 		Message bitField = (Message)message;
 		byte[] payLoad = bitField.getPayload();
 	}
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 68bdc0297e71b524f01baf4f23642464b4d9e382
