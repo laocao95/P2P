@@ -70,6 +70,11 @@ public class BitfieldManager {
 		
 	}
 	
+	public boolean[] getBitField(PeerInfo peerInfo){
+		boolean[] tmp = bitFields.get(peerInfo);
+		return tmp;
+	}
+	
 	public int getpieceNum(){
 		return pieceNum;
 	}
