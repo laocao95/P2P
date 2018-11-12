@@ -7,12 +7,18 @@ public class BitfieldManager {
 	private static class SingletonHolder {
 		public final static BitfieldManager instance = new BitfieldManager();
 	}
-	private int pieceSize = ArgReader.getInstance().getfileSize()/ArgReader.getInstance().getfileSize();
+	
+	
+	private int pieceNum = ArgReader.getInstance().getfileSize()/ArgReader.getInstance().getpieceSize();
+	//record required bits
+	boolean requiredPieces[] = new boolean[pieceNum];
 	HashMap<PeerInfo, boolean[]> bitFields = new HashMap<>();
 	private BitfieldManager(){
-		//PeerInfoManagerPeer
+		//initiate
+		Arrays.fill(requiredPieces, false);
+		//initiate bit fields of every peer
 		for (PeerInfo peer : PeerInfoManager.getInstance().getPeers()){
-			boolean singlePeer[] = new boolean[pieceSize];
+			boolean singlePeer[] = new boolean[pieceNum];
 			if(peer.getHasFile()){
 				Arrays.fill(singlePeer, true);
 				bitFields.put(peer, singlePeer);
@@ -28,23 +34,23 @@ public class BitfieldManager {
 		return SingletonHolder.instance;
 	}
 
-	//for receive have message
+	//for receiving have message
 	synchronized public void updateBitfield(int peerInfo, int pieceNum){
 		//othersBitfield[peerID][pieceNum] = true;
 		boolean[] tmp = bitFields.get(peerInfo);
 		tmp[pieceNum] = true;
 	}
 	
-	public int compareAndchoose(PeerInfo peerInfo){
+	synchronized public int compareAndchoose(PeerInfo peerInfo){
 		//compare if there is interested pieces
 		boolean[] myBitField = bitFields.get(PeerInfoManager.getInstance().getMyInfo());
 		boolean[] destBitField = bitFields.get(peerInfo);
-		int[] diff = new int[pieceSize];
+		List<Integer> diff = new ArrayList<>();
 		boolean flag = false;
-		Arrays.fill(diff, 0);
-		for (int i = 0; i < pieceSize; i++){
-			if(myBitField[i] == false && destBitField[i] == true){
-				diff[i] = i;
+		for (int i = 0; i < pieceNum; i++){
+			//have not received && have not been required 
+			if(myBitField[i] == false && destBitField[i] == true && requiredPieces[i] == false){
+				diff.add(i);
 				flag = true;
 			}
 		}
@@ -54,14 +60,18 @@ public class BitfieldManager {
 		}
 		else {
 			//random choose a file piece
-			int want = new Random().nextInt(diff.length);
+			Random rnd = new Random(2);
+			Collections.shuffle(diff, rnd);
+			int want = diff.get(0);
+			//record that this pieces has been required
+			requiredPieces[want] = true;
 			return want;
 		}
 		
 	}
 	
-	public int getPieceSize(){
-		return pieceSize;
+	public int getpieceNum(){
+		return pieceNum;
 	}
 }
 
