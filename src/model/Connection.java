@@ -11,10 +11,12 @@ public class Connection extends Thread{
 	private PeerInfo peerInfo = null;
 	private InputStream inputStream;
 	private OutputStream outputStream;
-	private Boolean correspondingPeersCompleted = false;
-	private Boolean receivedHandShake = false;
-	private Boolean serverChoke = false;
-	private Boolean clientInterest = false;
+	private boolean correspondingPeersCompleted = false;
+	private boolean receivedHandShake = false;
+	private boolean peerChokeMe = false;
+	private boolean peerInterestMe = false;
+	private int downloadingNumOfPeriod = 0;
+
 	
 	
 	//check handshake
@@ -63,21 +65,22 @@ public class Connection extends Thread{
 					}
 					break;
 					case CHOKE: {
-						serverChoke = true;
+						peerChokeMe = true;
 						System.out.println("[Time]: Peer [peer_ID 1] is choked by [peer_ID 2].");
 					}
 					break;
 					case UNCHOKE: {
-						serverChoke = false;
+						peerChokeMe = false;
 						MessageHandler.getInstance().handleUnchokedMessage(this, message);
+
 					}
 					break;
 					case INTERESTED: {
-						clientInterest = true;
+						peerInterestMe = true;
 					}
 					break;
 					case NOT_INTERESTED: {
-						clientInterest = false;
+						peerInterestMe = false;
 					}
 					break;
 					case HAVE: {
@@ -90,7 +93,7 @@ public class Connection extends Thread{
 					break;
 					case REQUEST: {
 						//when receive request, check if is choked
-						if (serverChoke == true){
+						if (peerChokeMe == true){
 							//don't reply the request
 						}
 						else
@@ -98,11 +101,12 @@ public class Connection extends Thread{
 							
 							//send requested piece
 						}
-								
+
 					}
 					break;
 					case PIECE: {
-						
+						downloadingNumOfPeriod++;
+						// to do
 					}
 					break;
 					default: {
@@ -146,10 +150,19 @@ public class Connection extends Thread{
 	public void setReceivedHandShake() {
 		receivedHandShake = true;
 	}
-	public Boolean getReceivedHandShake() {
+	public boolean getReceivedHandShake() {
 		return receivedHandShake;
 	}
-	
+	public int getDownloadingNumOfPeriod() {
+		return downloadingNumOfPeriod;
+	}
+	public void resetDownloadingNum() {
+		downloadingNumOfPeriod = 0;
+	}
+	public boolean getInterestedFlag() {
+		return peerInterestMe;
+	}
+
 	public Message readMessage() throws Exception{
 		
 		if (!receivedHandShake) {
@@ -202,7 +215,6 @@ public class Connection extends Thread{
 			}
 			return message;
 		}
-
 	}
 	public void close() throws IOException {
 		socket.close();

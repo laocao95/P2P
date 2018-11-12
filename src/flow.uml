@@ -40,7 +40,6 @@ loop every p(m) seconds
 		a -> b: unchocked
 	else
 		a -> b: chocked
-		a -> a: set chocked flag
 	end alt
 
 end loop

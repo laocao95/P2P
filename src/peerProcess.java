@@ -1,7 +1,7 @@
 import java.net.*;
+import controller.*;
 import java.util.*;
 import model.*;
-import controller.*;
 public class peerProcess {
 	private ServerSocket serverSocket;
 	private List<Connection> peerConnectionList;
@@ -16,6 +16,10 @@ public class peerProcess {
 		//connect to peers before this server
 		connectToBeforePeer();
 		
+		//start timer
+		MyTimer mytimer = new MyTimer(peerConnectionList);
+		mytimer.startTimer();
+		
 		//wait for peers connect later
 		try {
 			
@@ -26,6 +30,8 @@ public class peerProcess {
 				
 				peerConnectionList.add(new Connection(socket));
 			}
+			
+			//
 		
 		} catch(Exception e) {
 			e.printStackTrace();
