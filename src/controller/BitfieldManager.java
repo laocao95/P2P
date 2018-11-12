@@ -4,7 +4,9 @@ import java.util.*;
 import model.*;
 
 public class BitfieldManager {
-	private static BitfieldManager instance;
+	private static class SingletonHolder {
+		public final static BitfieldManager instance = new BitfieldManager();
+	}
 	private int pieceSize = ArgReader.getInstance().getfileSize()/ArgReader.getInstance().getfileSize();
 	HashMap<PeerInfo, boolean[]> bitFields = new HashMap<>();
 	private BitfieldManager(){
@@ -22,10 +24,8 @@ public class BitfieldManager {
 		}
 	}
 	public static BitfieldManager getInstance(){
-		if (instance == null) {
-			instance = new BitfieldManager();
-		}
-		return instance;
+
+		return SingletonHolder.instance;
 	}
 
 	//for receive have message

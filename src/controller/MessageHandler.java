@@ -5,16 +5,15 @@ import custom.*;
 import custom.Config.MessageType;
 
 public class MessageHandler {
-	private static MessageHandler instance;
+	private static class SingletonHolder {
+		public final static MessageHandler instance = new MessageHandler();
+	}
 	private MessageHandler() {
 		// TODO Auto-generated constructor stub
 	}
 	
 	public static MessageHandler getInstance() {
-		if (instance == null) {
-			instance = new MessageHandler();
-		}
-		return instance;
+		return SingletonHolder.instance;
 	}
 
 	public void handleHandshakeMessage(Connection connect, Message message) throws Exception{

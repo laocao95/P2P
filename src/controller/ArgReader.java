@@ -4,13 +4,15 @@ import java.util.*;
 import model.*;
 
 public class ArgReader {
-	private static ArgReader instance;
 	private int NumberOfPreferredNeighbors;
 	private int UnchokingInterval;
 	private int OptimisticUnchokingInterval;
 	private String fileName;
 	private int fileSize;
 	private int pieceSize;
+	private static class SingletonHolder {
+		public final static ArgReader instance = new ArgReader();
+	}
 	private ArgReader() {
 		try {
 			FileReader reader = new FileReader("./Common.cfg");
@@ -48,10 +50,7 @@ public class ArgReader {
 		}
 	}
 	public static ArgReader getInstance() {
-		if (instance == null) {
-			instance = new ArgReader();
-		}
-		return instance;
+		return SingletonHolder.instance;
 	}
 	
 	public int getNumberOfPreferredNeighbors(){
