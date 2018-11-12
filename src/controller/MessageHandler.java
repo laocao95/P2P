@@ -73,7 +73,7 @@ public class MessageHandler {
 		Message have = (Message)message;
 		byte[] payLoad = have.getPayload();
 		int pieceNum = Util.Byte2Int(payLoad);
-		PeerInfo peerInfo = connect.getPeerInfo()
+		PeerInfo peerInfo = connect.getPeerInfo();
 		BitfieldManager.getInstance().updateBitfield(peerInfo, pieceNum);
 	}
 	
