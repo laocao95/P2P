@@ -6,7 +6,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
+import custom.Config.MessageType;
 import model.Connection;
+import model.Message;
 
 public class MyTimer extends Thread{
 	private List<Connection> connectionList;
@@ -43,28 +45,20 @@ public class MyTimer extends Thread{
 			if (currentMillis - lastUnchokingTime > unchokingInterval) {
 				lastUnchokingTime = currentMillis;
 				List<Connection> interestedList = new ArrayList<>();
-				List<Connection> speedList = new ArrayList<>();
 				List<Connection> newPreferedList = new ArrayList<>();
-				//get interest list
+				//get interest and have speed peers
 				for (Connection connection : connectionList) {
-					//confirm the connection already finished handShake
-					if (connection.getPeerInfo() != null && connection.getInterestedFlag()) {
+					if (connection.getInterestedFlag() && connection.getDownloadingNumOfPeriod() > 0) {
 						interestedList.add(connection);
 					}
 				}
-				//select peer which already have speed in interested list
-				for (Connection connection : interestedList) {
-					if (connection.getDownloadingNumOfPeriod() > 0) {
-						speedList.add(connection);
-					}
-				}
 				//select new prefer list
-				if (speedList.size() > 0) {
-					if (speedList.size() <= ArgReader.getInstance().getNumberOfPreferredNeighbors()) {
-						newPreferedList = speedList;
+				if (interestedList.size() > 0) {
+					if (interestedList.size() <= ArgReader.getInstance().getNumberOfPreferredNeighbors()) {
+						newPreferedList = interestedList;
 					} else {
 						//sort by downloadingNum
-						Collections.sort(speedList, new Comparator<Connection>() {
+						Collections.sort(interestedList, new Comparator<Connection>() {
 							@Override
 							public int compare(Connection c1, Connection c2) {
 								return c1.getDownloadingNumOfPeriod() - c2.getDownloadingNumOfPeriod();
@@ -72,41 +66,37 @@ public class MyTimer extends Thread{
 						});
 						//add k fast
 						for (int i = 0; i < ArgReader.getInstance().getNumberOfPreferredNeighbors(); i++) {
-							newPreferedList.add(speedList.get(i));
+							newPreferedList.add(interestedList.get(i));
 						}
 					}
 				}
 				for (Connection connection : newPreferedList) {
-					//first time choke
-					if (preferedList.contains(connection)) {
-						//send ChockMessage
-					} else {
-						//send unchokeMessage
+					if (!preferedList.contains(connection)) {
+						//not in previous preferredList, send unchokeMessage
+						connection.sendMessage(new Message(MessageType.UNCHOKE, null));
 					}
 				}
-				//reset the downloadingNum to zero
+				for (Connection connection : connectionList) {
+					if (!newPreferedList.contains(connection)) {
+						//not in new preferredList, send chokeMessage
+						connection.sendMessage(new Message(MessageType.CHOKE, null));
+					}
+				}
+				//reset the all connection downloadingNum to zero
 				for (Connection connection : connectionList) {
 					connection.resetDownloadingNum();
 				}
-				//set the newPreferedList to preferedList
+				//set the newPreferedList as preferedList
 				preferedList = newPreferedList;
 			}
 			
 			//select optimistic neighbor
 			if (currentMillis - lastOptimisticUnchokingTime > optimisticUnchokingInterval) {
-				List<Connection> interestedList = new ArrayList<>();
 				List<Connection> interestedButNotInPreferredList = new ArrayList<>();
-				
 				lastOptimisticUnchokingTime = currentMillis;
-				//get interest list
 				for (Connection connection : connectionList) {
 					//confirm the connection already finished handShake
-					if (connection.getPeerInfo() != null && connection.getInterestedFlag()) {
-						interestedList.add(connection);
-					}
-				}
-				for (Connection connection : interestedList) {
-					if (!preferedList.contains(connection)) {
+					if (connection.getInterestedFlag() && !preferedList.contains(connection)) {
 						interestedButNotInPreferredList.add(connection);
 					}
 				}
@@ -115,7 +105,8 @@ public class MyTimer extends Thread{
 					Random rnd = new Random(2);
 					Collections.shuffle(interestedButNotInPreferredList, rnd);
 					optimisticPeer = interestedButNotInPreferredList.get(0);
-					//send unchoke message
+					//send unchokeMessage
+					optimisticPeer.sendMessage(new Message(MessageType.UNCHOKE, null));
 				}
 				
 			}
