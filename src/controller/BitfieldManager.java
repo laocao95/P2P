@@ -2,6 +2,7 @@ package controller;
 import java.io.*;
 import java.util.*;
 import model.*;
+import custom.*;
 
 public class BitfieldManager {
 	private static class SingletonHolder {
@@ -77,6 +78,18 @@ public class BitfieldManager {
 	
 	public int getpieceNum(){
 		return pieceNum;
+	}
+	
+	public boolean isAllReceived(PeerInfo peerInfo){
+		boolean[] tmp = bitFields.get(peerInfo);
+		//check if tmp is all 1
+		//if true--->is all received
+		if (Util.allTrue(tmp)){
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }
 

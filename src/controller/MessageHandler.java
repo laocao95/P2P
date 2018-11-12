@@ -3,6 +3,7 @@ package controller;
 import model.*;
 import custom.*;
 import custom.Config.MessageType;
+import java.math.*;
 
 public class MessageHandler {
 	private static class SingletonHolder {
@@ -56,15 +57,28 @@ public class MessageHandler {
 		Message bitField = (Message)message;
 		PeerInfo peerInfo = connect.getPeerInfo();
 		byte[] payLoad = bitField.getPayload();
-		int pieceSize = BitfieldManager.getInstance().getpieceNum();
-		for (int i = 0; i < pieceSize;i++){
-			for (int j = 0; j < 8; j++){
-				//update bitfield if the correspond bit is 1
-				int field = (payLoad[i] >> 7-j) & 1;
-				if (field == 1){
-					BitfieldManager.getInstance().updateBitfield(peerInfo, j + i * 8);
+		int pieceNum = BitfieldManager.getInstance().getpieceNum();
+		int byteNum = (int)Math.ceil((double)pieceNum/8);
+		for (int i = 0; i < byteNum; i++){
+			if (i != byteNum - 1){
+				for (int j = 0; j < 8; j++){
+					//update bitfield if the correspond bit is 1
+					int field = (payLoad[i] >> 7-j) & 1;
+					if (field == 1){
+						BitfieldManager.getInstance().updateBitfield(peerInfo, j + i * 8);
+					}
 				}
-				
+			}
+			//the last byte may contain extra 0s
+			else {
+				int remainBit = pieceNum - i * 8;
+				for (int j = 0; j < remainBit; j++){
+					//update bitfield if the correspond bit is 1
+					int field = (payLoad[i] >> 7-j) & 1;
+					if (field == 1){
+						BitfieldManager.getInstance().updateBitfield(peerInfo, j + i * 8);
+					}
+				}
 			}
 		}
 	}
