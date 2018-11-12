@@ -54,10 +54,18 @@ public class MessageHandler {
 	
 	public void handleBitFieldMessage(Connection connect, Message message) throws Exception{
 		Message bitField = (Message)message;
+		PeerInfo peerInfo = connect.getPeerInfo();
 		byte[] payLoad = bitField.getPayload();
-		int pieceSize = BitfieldManager.getInstance().getPieceSize();
+		int pieceSize = BitfieldManager.getInstance().getpieceNum();
 		for (int i = 0; i < pieceSize;i++){
-			
+			for (int j = 0; j < 8; j++){
+				//update bitfield if the correspond bit is 1
+				int field = (payLoad[i] >> 7-j) & 1;
+				if (field == 1){
+					BitfieldManager.getInstance().updateBitfield(peerInfo, j + i * 8);
+				}
+				
+			}
 		}
 	}
 	
