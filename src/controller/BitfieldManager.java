@@ -3,6 +3,7 @@ import java.io.*;
 import java.util.*;
 import model.*;
 import custom.*;
+import java.math.*;
 
 public class BitfieldManager {
 	private static class SingletonHolder {
@@ -10,7 +11,7 @@ public class BitfieldManager {
 	}
 	
 	
-	private int pieceNum = ArgReader.getInstance().getfileSize()/ArgReader.getInstance().getpieceSize();
+	private int pieceNum = (int)Math.ceil((double)ArgReader.getInstance().getfileSize()/(double)ArgReader.getInstance().getpieceSize());
 	//record required bits
 	boolean requiredPieces[] = new boolean[pieceNum];
 	HashMap<PeerInfo, boolean[]> bitFields = new HashMap<>();
