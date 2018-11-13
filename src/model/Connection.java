@@ -50,7 +50,7 @@ public class Connection extends Thread{
 			
 			if (peerInfo != null) {
 				MessageHandler.getInstance().sendHandShakeMessage(this);
-				
+				MessageHandler.getInstance().sendBitfieldMessage(this);
 			}
 			
 			//need to implement stop condition
