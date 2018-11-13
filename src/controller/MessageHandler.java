@@ -106,6 +106,15 @@ public class MessageHandler {
 				}
 			}
 		}
+		if (BitfieldManager.getInstance().comparePeerInfo(peerInfo)){
+			Message interested = new Message(MessageType.INTERESTED, null);
+			connect.sendMessage(interested);
+		}
+		else{
+			Message notInterested = new Message(MessageType.NOT_INTERESTED, null);
+			connect.sendMessage(notInterested);
+		}
+		//System.out.println(BitfieldManager.getInstance().getBitField(peerInfo));
 	}
 	
 	public void handleHaveMessage(Connection connect, Message message) throws Exception{
@@ -114,6 +123,14 @@ public class MessageHandler {
 		int pieceNum = Util.Byte2Int(payLoad);
 		PeerInfo peerInfo = connect.getPeerInfo();
 		BitfieldManager.getInstance().updateBitfield(peerInfo, pieceNum);
+		if (BitfieldManager.getInstance().comparePeerInfo(peerInfo)){
+			Message interested = new Message(MessageType.INTERESTED, null);
+			connect.sendMessage(interested);
+		}
+		else{
+			Message notInterested = new Message(MessageType.NOT_INTERESTED, null);
+			connect.sendMessage(notInterested);
+		}
 	}
 	
 	public void handleUnchokedMessage(Connection connect, Message message) throws Exception{

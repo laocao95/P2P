@@ -72,6 +72,27 @@ public class BitfieldManager {
 		
 	}
 	
+	//just compare if there is interested piece
+	public boolean comparePeerInfo(PeerInfo peerInfo){
+		//compare if there is interested pieces
+		boolean[] myBitField = bitFields.get(PeerInfoManager.getInstance().getMyInfo());
+		boolean[] destBitField = bitFields.get(peerInfo);
+		boolean flag = false;
+		for (int i = 0; i < pieceNum; i++){
+			//have not received && have not been required 
+			if(myBitField[i] == false && destBitField[i] == true && requiredPieces[i] == false){
+				flag = true;
+			}
+		}
+		//no interested pieces
+		if (flag == false){
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	
 	public boolean[] getBitField(PeerInfo peerInfo){
 		boolean[] tmp = bitFields.get(peerInfo);
 		return tmp;
