@@ -162,6 +162,12 @@ public class Connection extends Thread{
 	public boolean getInterestedFlag() {
 		return peerInterestMe;
 	}
+	public void setInterested(){
+		peerInterestMe = true;
+	}
+	public void setNotInterested(){
+		peerInterestMe = false;
+	}
 
 	public Message readMessage() throws Exception{
 		

@@ -146,4 +146,14 @@ public class MessageHandler {
 			connect.sendMessage(request);
 		}
 	}
+	
+	public void handleInterestedMessage(Connection connect, Message message) throws Exception{
+		//Message interest = (Message)message;
+		connect.setInterested();
+	}
+	
+	public void handleUninterestedMessage(Connection connect, Message message) throws Exception{
+		//Message notInterest = (Message)message;
+		connect.setNotInterested();
+	}
 }
