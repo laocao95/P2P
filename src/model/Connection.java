@@ -50,9 +50,8 @@ public class Connection extends Thread{
 			
 			if (peerInfo != null) {
 				MessageHandler.getInstance().sendHandShakeMessage(this);
-				MessageHandler.getInstance().sendBitfieldMessage(this);
+				
 			}
-			//need to add a Controller.sendBitfiedMessage()
 			
 			//need to implement stop condition
 			while(!correspondingPeersCompleted) {
@@ -72,15 +71,16 @@ public class Connection extends Thread{
 					case UNCHOKE: {
 						peerChokeMe = false;
 						MessageHandler.getInstance().handleUnchokedMessage(this, message);
-						System.out.println(peerInfo.getId() + "unchoke me");
-
+						System.out.println(peerInfo.getId() + " unchoke me");
 					}
 					break;
 					case INTERESTED: {
+						System.out.println(peerInfo.getId() + " interst me");
 						peerInterestMe = true;
 					}
 					break;
 					case NOT_INTERESTED: {
+						System.out.println(peerInfo.getId() + " notInterst me");
 						peerInterestMe = false;
 					}
 					break;
@@ -94,6 +94,7 @@ public class Connection extends Thread{
 					break;
 					case REQUEST: {
 						//when receive request, check if is choked
+						System.out.println("receive request from " + peerInfo.getId());
 						if (peerChokeMe == true){
 							//don't reply the request
 						}
@@ -106,6 +107,7 @@ public class Connection extends Thread{
 					break;
 					case PIECE: {
 						downloadingNumOfPeriod++;
+						System.out.println("receive piece from " + peerInfo.getId());
 						MessageHandler.getInstance().handlePieceMessage(this, message);
 						// to do
 					}

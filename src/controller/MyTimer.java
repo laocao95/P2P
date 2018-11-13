@@ -77,7 +77,7 @@ public class MyTimer extends Thread{
 					}
 				}
 				for (Connection connection : connectionList) {
-					if (!newPreferedList.contains(connection)) {
+					if (!newPreferedList.contains(connection) && connection.getReceivedHandShake()) {
 						//not in new preferredList, send chokeMessage
 						connection.sendMessage(new Message(MessageType.CHOKE, null));
 					}

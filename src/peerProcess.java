@@ -27,7 +27,7 @@ public class peerProcess {
 				peerConnectionList.add(new Connection(socket));
 			}
 			
-			//start timer
+			//start timer. Temporarily begin timer after all peers connecting
 			MyTimer mytimer = new MyTimer(peerConnectionList);
 			mytimer.startTimer();
 		
