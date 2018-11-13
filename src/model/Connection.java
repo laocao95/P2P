@@ -49,8 +49,8 @@ public class Connection extends Thread{
 		try {
 			
 			if (peerInfo != null) {
-
 				MessageHandler.getInstance().sendHandShakeMessage(this);
+				MessageHandler.getInstance().sendBitfieldMessage(this);
 			}
 			//need to add a Controller.sendBitfiedMessage()
 			
