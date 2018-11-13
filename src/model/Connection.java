@@ -85,7 +85,7 @@ public class Connection extends Thread{
 					}
 					break;
 					case HAVE: {
-						
+						MessageHandler.getInstance().handleHaveMessage(this, message);
 					}
 					break;
 					case BITFIELD: {
@@ -95,14 +95,7 @@ public class Connection extends Thread{
 					case REQUEST: {
 						//when receive request, check if is choked
 						System.out.println("receive request from " + peerInfo.getId());
-						if (peerChokeMe == true){
-							//don't reply the request
-						}
-						else
-						{
-							MessageHandler.getInstance().handleRequestMessage(this, BitfieldManager.getInstance().getpieceNum());							
-							//send requested piece
-						}
+						MessageHandler.getInstance().handleRequestMessage(this, BitfieldManager.getInstance().getpieceNum());							
 					}
 					break;
 					case PIECE: {
