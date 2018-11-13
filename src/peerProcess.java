@@ -17,8 +17,8 @@ public class peerProcess {
 		connectToBeforePeer();
 		
 		//start timer
-		MyTimer mytimer = new MyTimer(peerConnectionList);
-		mytimer.startTimer();
+//		MyTimer mytimer = new MyTimer(peerConnectionList);
+//		mytimer.startTimer();
 		
 		//wait for peers connect later
 		try {

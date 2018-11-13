@@ -184,7 +184,12 @@ public class MessageHandler {
 	public void handlePieceMessage(Connection connect, Message message) throws Exception{
 		Message piece = (Message)message;
 		byte[] payLoad = piece.getPayload();
-		int pieceNum = Util.Byte2Int(payLoad);
+		byte[] pieceIndex = new byte[4];
+		byte[] pieceContent = new byte[payLoad.length - 4];
+		System.arraycopy(pieceIndex, 0, payLoad, 0, 4);
+		System.arraycopy(pieceIndex, 4, pieceContent, 0, pieceContent.length);
+		int pieceNum = Util.Byte2Int(pieceIndex);
+		FileManager.getInstance().write(pieceNum, pieceContent);
 		PeerInfo peerInfo = connect.getPeerInfo();
 		BitfieldManager.getInstance().updateBitfield(peerInfo, pieceNum);			//update Bitfield
 		int resultOfCAC;
