@@ -19,6 +19,7 @@ public class MessageHandler {
 
 	public void handleHandshakeMessage(Connection connect, Message message) throws Exception{
 		//check header
+		
 		String header = "P2PFILESHARINGPROJ";
 
 		HandShakeMessage handShakeMessage = (HandShakeMessage)message;
@@ -32,6 +33,7 @@ public class MessageHandler {
 			PeerInfo peerInfo = PeerInfoManager.getInstance().getPeerInfoById(peerId);
 			connect.setPeerInfo(peerInfo);
 			connect.setReceivedHandShake();
+			System.out.println("receive handshake from " + connect.getPeerInfo().getId());
 			//send handshake
 			sendHandShakeMessage(connect);
 			//send bitfield
@@ -39,10 +41,8 @@ public class MessageHandler {
 		} else {
 			//I am the handshake initiator, no need to send handshake again
 			connect.setReceivedHandShake();
-			
+			System.out.println("receive handshake from " + connect.getPeerInfo().getId());
 		}	
-		System.out.println("receive handshake from " + connect.getPeerInfo().getId());
-		
 	}
 	
 	public void sendHandShakeMessage(Connection connect) throws Exception{
@@ -76,6 +76,7 @@ public class MessageHandler {
 		}
 		Message bitfieldMessage = new Message(MessageType.BITFIELD, payload);
 		connect.sendMessage(bitfieldMessage);
+		System.out.println("sendBitfiedMessage");
 	}
 	
 	public void handleBitFieldMessage(Connection connect, Message message) throws Exception{
@@ -106,7 +107,19 @@ public class MessageHandler {
 				}
 			}
 		}
-
+		
+		boolean[] bitfield = BitfieldManager.getInstance().getBitField(peerInfo);
+		System.out.println("receive bitfield length = " + bitfield.length);
+		String out = "";
+		for (int i = 0; i < bitfield.length; i++) {
+			if (bitfield[i] == true) {
+				out += "1";
+			} else if (bitfield[i] == false) {
+				out += "0";
+			}
+		}
+		System.out.println("receive bitfield" + out);
+		
 		if (BitfieldManager.getInstance().comparePeerInfo(peerInfo)){
 			Message interested = new Message(MessageType.INTERESTED, null);
 			connect.sendMessage(interested);
@@ -115,7 +128,7 @@ public class MessageHandler {
 			Message notInterested = new Message(MessageType.NOT_INTERESTED, null);
 			connect.sendMessage(notInterested);
 		}
-		//System.out.println(BitfieldManager.getInstance().getBitField(peerInfo));
+		
 	}
 	
 	public void handleHaveMessage(Connection connect, Message message) throws Exception{

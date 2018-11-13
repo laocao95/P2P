@@ -206,6 +206,8 @@ public class Connection extends Thread{
 			byte[] lengthBytes = Arrays.copyOfRange(typeAndLength, 0, 4);
 			int length = Util.Byte2Int(lengthBytes);
 			
+			System.out.println("typeIndex" + typeIndex);
+			
 			Message message;
 			if (length == 1) {
 				message = new Message(type, null);
