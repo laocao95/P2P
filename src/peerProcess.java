@@ -16,10 +16,6 @@ public class peerProcess {
 		//connect to peers before this server
 		connectToBeforePeer();
 		
-		//start timer
-//		MyTimer mytimer = new MyTimer(peerConnectionList);
-//		mytimer.startTimer();
-		
 		//wait for peers connect later
 		try {
 			
@@ -31,7 +27,9 @@ public class peerProcess {
 				peerConnectionList.add(new Connection(socket));
 			}
 			
-			//
+			//start timer
+			MyTimer mytimer = new MyTimer(peerConnectionList);
+			mytimer.startTimer();
 		
 		} catch(Exception e) {
 			e.printStackTrace();

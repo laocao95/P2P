@@ -66,12 +66,13 @@ public class Connection extends Thread{
 					break;
 					case CHOKE: {
 						peerChokeMe = true;
-						System.out.println("[Time]: Peer [peer_ID 1] is choked by [peer_ID 2].");
+						System.out.println(peerInfo.getId() + " choke me");
 					}
 					break;
 					case UNCHOKE: {
 						peerChokeMe = false;
 						MessageHandler.getInstance().handleUnchokedMessage(this, message);
+						System.out.println(peerInfo.getId() + "unchoke me");
 
 					}
 					break;

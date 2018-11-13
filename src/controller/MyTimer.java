@@ -22,8 +22,8 @@ public class MyTimer extends Thread{
 	
 	public MyTimer(List<Connection> connectionList) {
 		this.connectionList = connectionList;
-		unchokingInterval = ArgReader.getInstance().getUnchokingInterval();
-		optimisticUnchokingInterval = ArgReader.getInstance().getOptimisticUnchokingInterval();
+		unchokingInterval = ArgReader.getInstance().getUnchokingInterval() * 1000;
+		optimisticUnchokingInterval = ArgReader.getInstance().getOptimisticUnchokingInterval() * 1000;
 		preferedList = new ArrayList<>();
 		lastUnchokingTime = 0;
 		lastOptimisticUnchokingTime = 0;
