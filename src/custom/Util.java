@@ -21,15 +21,4 @@ public class Util {
 			| (bytes[2]&0xff)<<8
 			| (bytes[3]&0xff);
 	}
-	// if a boolean array is all true
-	public static boolean allTrue (boolean[] values) {
-	    for (boolean value : values) {
-	        if (!value)
-	            return false;
-	    }
-	    return true;
-	}
-	//byte2boolean
-	
-	//boolean2byte
 }

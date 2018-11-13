@@ -98,14 +98,14 @@ public class Connection extends Thread{
 						}
 						else
 						{
-							
+							MessageHandler.getInstance().handleRequestMessage(this, BitfieldManager.getInstance().getpieceNum());							
 							//send requested piece
 						}
-
 					}
 					break;
 					case PIECE: {
 						downloadingNumOfPeriod++;
+						MessageHandler.getInstance().handlePieceMessage(this, message);
 						// to do
 					}
 					break;

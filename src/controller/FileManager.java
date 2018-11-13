@@ -46,11 +46,9 @@ public class FileManager {
 			byte[] pieceBuffer;
 			if(piece == (piecesNum - 1)) {
 				pieceBuffer = new byte[ArgReader.getInstance().getfileSize() - (piecesNum - 1) * ArgReader.getInstance().getpieceSize()];	//Create a buffer of piece size and read data
-				System.out.println("read" + pieceBuffer.length);
 			}
 			else {
 				pieceBuffer = new byte[ArgReader.getInstance().getpieceSize()];
-				System.out.println("read" + pieceBuffer.length);
 			}
 			input.read(pieceBuffer);
 			input.close();
@@ -66,7 +64,6 @@ public class FileManager {
 		try {
 			RandomAccessFile output = new RandomAccessFile(file, "rw");			//Open RandomAccessFile to write at desired position
 			output.seek(piece * ArgReader.getInstance().getpieceSize());						//Seek to desired position
-			System.out.println("write" + data.length);
 			output.write(data);
 			output.close();
 		} catch (Exception e) {

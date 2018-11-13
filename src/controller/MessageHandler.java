@@ -106,6 +106,7 @@ public class MessageHandler {
 				}
 			}
 		}
+
 		if (BitfieldManager.getInstance().comparePeerInfo(peerInfo)){
 			Message interested = new Message(MessageType.INTERESTED, null);
 			connect.sendMessage(interested);
@@ -155,5 +156,37 @@ public class MessageHandler {
 	public void handleUninterestedMessage(Connection connect, Message message) throws Exception{
 		//Message notInterest = (Message)message;
 		connect.setNotInterested();
+	}
+	
+	public void handleRequestMessage(Connection connect, int pieceNumber) throws Exception{
+		byte[] pieceIndex = Util.IntToByte(pieceNumber);
+		byte[] pieceContent = FileManager.getInstance().read(pieceNumber);
+		byte[] payload = new byte[4 + pieceContent.length];
+		System.arraycopy(pieceIndex, 0, payload, 0, 4);
+		System.arraycopy(pieceContent, 0, payload, 4, pieceContent.length);			//link Index and Content
+		Message piece = new Message(MessageType.PIECE, payload);
+		connect.sendMessage(piece);
+	}
+	
+	public void handlePieceMessage(Connection connect, Message message) throws Exception{
+		Message piece = (Message)message;
+		byte[] payLoad = piece.getPayload();
+		int pieceNum = Util.Byte2Int(payLoad);
+		PeerInfo peerInfo = connect.getPeerInfo();
+		BitfieldManager.getInstance().updateBitfield(peerInfo, pieceNum);			//update Bitfield
+		int resultOfCAC;
+		resultOfCAC = BitfieldManager.getInstance().compareAndchoose(connect.getPeerInfo());
+		if(resultOfCAC == -1) {
+			Message notInterested = new Message(MessageType.NOT_INTERESTED, null);	//Not interested
+			connect.sendMessage(notInterested);
+		}
+		else {
+			byte[] payload = Util.IntToByte(resultOfCAC);
+			Message request = new Message(MessageType.REQUEST, payload);			//request random one
+			connect.sendMessage(request);
+			Message have = new Message(MessageType.HAVE, payload);					//send have Piece number
+			connect.sendMessage(have);
+		}
+		
 	}
 }
