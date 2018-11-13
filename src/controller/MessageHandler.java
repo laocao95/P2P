@@ -161,12 +161,12 @@ public class MessageHandler {
 		}
 	}
 	
-	public void handleInterestedMessage(Connection connect, Message message) throws Exception{
+	public void handleInterestedMessage(Connection connect) throws Exception{
 		//Message interest = (Message)message;
 		connect.setInterested();
 	}
 	
-	public void handleUninterestedMessage(Connection connect, Message message) throws Exception{
+	public void handleUninterestedMessage(Connection connect) throws Exception{
 		//Message notInterest = (Message)message;
 		connect.setNotInterested();
 	}
