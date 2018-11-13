@@ -32,9 +32,12 @@ public class MessageHandler {
 			PeerInfo peerInfo = PeerInfoManager.getInstance().getPeerInfoById(peerId);
 			connect.setPeerInfo(peerInfo);
 			connect.setReceivedHandShake();
+			//send handshake
 			sendHandShakeMessage(connect);
+			//send bitfield
+			sendBitfieldMessage(connect);
 		} else {
-			//means I am the handshake initiator, no need to send handshake again
+			//I am the handshake initiator, no need to send handshake again
 			connect.setReceivedHandShake();
 			
 		}	
@@ -51,6 +54,28 @@ public class MessageHandler {
 		connect.sendMessage(message);
 		
 		System.out.println("send handshake message to " + connect.getPeerInfo().getId());
+	}
+	public void sendBitfieldMessage(Connection connect) throws Exception{
+		boolean[] myBitfield = BitfieldManager.getInstance().getBitField(PeerInfoManager.getInstance().getMyInfo());
+		int byteNum = (int) Math.ceil((double)myBitfield.length / 8);
+		byte[] payload = new byte[byteNum];
+		for (int i = 0; i < byteNum; i++) {
+			if (i == byteNum - 1) {
+				int offset = 7;
+				for (int t = i * 8; t < myBitfield.length; t++) {
+					payload[i] += myBitfield[t]?1<<offset:0;
+					offset--;
+				}
+			} else {
+				int offset = 7;
+				for (int t = i * 8; t < i * 8 + 8; t++) {
+					payload[i] += myBitfield[t]?1<<offset:0;
+					offset--;
+				}
+			}
+		}
+		Message bitfieldMessage = new Message(MessageType.BITFIELD, payload);
+		connect.sendMessage(bitfieldMessage);
 	}
 	
 	public void handleBitFieldMessage(Connection connect, Message message) throws Exception{
