@@ -13,6 +13,7 @@ public class peerProcess {
 		
 		serverInfo = PeerInfoManager.getInstance().getPeerInfoById(id);
 		PeerInfoManager.getInstance().setMyInfo(serverInfo);
+		FileManager.getInstance().setFile(id, serverInfo.getHasFile());
 		
 		//connect to peers before this server
 		try {
