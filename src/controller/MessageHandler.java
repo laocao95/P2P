@@ -186,25 +186,29 @@ public class MessageHandler {
 		byte[] payLoad = piece.getPayload();
 		byte[] pieceIndex = new byte[4];
 		byte[] pieceContent = new byte[payLoad.length - 4];
-		System.arraycopy(pieceIndex, 0, payLoad, 0, 4);
-		System.arraycopy(pieceIndex, 4, pieceContent, 0, pieceContent.length);
+		System.arraycopy(payLoad, 0, pieceIndex, 0, 4);
+		System.arraycopy(payLoad, 4, pieceContent, 0, pieceContent.length);
 		int pieceNum = Util.Byte2Int(pieceIndex);
 		FileManager.getInstance().write(pieceNum, pieceContent);
 		PeerInfo peerInfo = connect.getPeerInfo();
 		BitfieldManager.getInstance().updateBitfield(peerInfo, pieceNum);			//update Bitfield
 		int resultOfCAC;
 		resultOfCAC = BitfieldManager.getInstance().compareAndchoose(connect.getPeerInfo());
-		if(resultOfCAC == -1) {
-			Message notInterested = new Message(MessageType.NOT_INTERESTED, null);	//Not interested
-			connect.sendMessage(notInterested);
-		}
-		else {
-			byte[] payload = Util.IntToByte(resultOfCAC);
-			Message request = new Message(MessageType.REQUEST, payload);			//request random one
-			connect.sendMessage(request);
-			Message have = new Message(MessageType.HAVE, payload);					//send have Piece number
-			connect.sendMessage(have);
-		}
 		
+		byte[] payload = Util.IntToByte(resultOfCAC);
+		//broadcast have message
+		//need a loop here!!!!!!!!
+		Message have = new Message(MessageType.HAVE, payload);					//send have Piece number
+		connect.sendMessage(have);
+		if (connect.getpeerChokeMe() == false){
+			if(resultOfCAC == -1) {
+				Message notInterested = new Message(MessageType.NOT_INTERESTED, null);	//Not interested
+				connect.sendMessage(notInterested);
+			}
+			else {
+				Message request = new Message(MessageType.REQUEST, payload);			//request random one
+				connect.sendMessage(request);
+			}
+		}
 	}
 }

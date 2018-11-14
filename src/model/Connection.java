@@ -220,6 +220,11 @@ public class Connection extends Thread{
 			return message;
 		}
 	}
+	
+	public boolean getpeerChokeMe(){
+		return peerChokeMe;
+	}
+	
 	public void close() throws IOException {
 		socket.close();
 	}
