@@ -54,6 +54,8 @@ public class MessageHandler {
 		
 		connect.sendMessage(message);
 		
+		connect.setSendedHandShake();
+		
 		System.out.println("send handshake message to " + connect.getPeerInfo().getId());
 	}
 	public void sendBitfieldMessage(Connection connect) throws Exception{

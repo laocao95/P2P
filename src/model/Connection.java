@@ -13,6 +13,7 @@ public class Connection extends Thread{
 	private OutputStream outputStream;
 	private boolean correspondingPeersCompleted = false;
 	private boolean receivedHandShake = false;
+	private boolean sendedHandShake = false;
 	private boolean peerChokeMe = true;
 	private boolean peerInterestMe = false;
 	private int downloadingNumOfPeriod = 0;
@@ -165,6 +166,12 @@ public class Connection extends Thread{
 	}
 	public void setNotInterested(){
 		peerInterestMe = false;
+	}
+	public void setSendedHandShake(){
+		sendedHandShake = true;
+	}
+	public boolean getSendedHandShake(){
+		return sendedHandShake;
 	}
 
 	public Message readMessage() throws Exception{
