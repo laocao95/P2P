@@ -17,7 +17,7 @@ public class FileManager {
 		return instance;
 	}
 	public void setFile(int id, boolean haveFile) {
-		this.filePath = "./src/" + ArgReader.getInstance().getfileName();		//file address
+		this.filePath = "peer_" + id + "/" + ArgReader.getInstance().getfileName();		//file address
 		this.file = new File(filePath);
 		if(haveFile) {				//When we are supposed to have the file, we do
 			if(!file.exists()) {
