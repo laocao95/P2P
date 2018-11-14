@@ -4,6 +4,7 @@ import model.*;
 import custom.*;
 import custom.Config.MessageType;
 import java.math.*;
+import java.util.List;
 
 public class MessageHandler {
 	private static class SingletonHolder {
@@ -184,32 +185,35 @@ public class MessageHandler {
 		connect.sendMessage(piece);
 	}
 	
-	public void handlePieceMessage(Connection connect, Message message) throws Exception{
+	public void handlePieceMessage(Connection connect, Message message, List<Connection> connectionList) throws Exception{
 		Message piece = (Message)message;
-		byte[] payLoad = piece.getPayload();
+		byte[] payload = piece.getPayload();
 		byte[] pieceIndex = new byte[4];
-		byte[] pieceContent = new byte[payLoad.length - 4];
-		System.arraycopy(payLoad, 0, pieceIndex, 0, 4);
-		System.arraycopy(payLoad, 4, pieceContent, 0, pieceContent.length);
+		byte[] pieceContent = new byte[payload.length - 4];
+		System.arraycopy(payload, 0, pieceIndex, 0, 4);
+		System.arraycopy(payload, 4, pieceContent, 0, pieceContent.length);
 		int pieceNum = Util.Byte2Int(pieceIndex);
 		FileManager.getInstance().write(pieceNum, pieceContent);
 		PeerInfo peerInfo = connect.getPeerInfo();
 		BitfieldManager.getInstance().updateBitfield(peerInfo, pieceNum);			//update Bitfield
-		int resultOfCAC;
-		resultOfCAC = BitfieldManager.getInstance().compareAndchoose(connect.getPeerInfo());
-		
-		byte[] payload = Util.IntToByte(resultOfCAC);
 		//broadcast have message
-		//need a loop here!!!!!!!!
-		Message have = new Message(MessageType.HAVE, payload);					//send have Piece number
-		connect.sendMessage(have);
+		for (Connection connection : connectionList) {
+			//ensure peer receive handshake first
+			if (connection.getReceivedHandShake()) {
+				Message have = new Message(MessageType.HAVE, payload);					//send have Piece number
+				connection.sendMessage(have);
+			}
+		}
 		if (connect.getpeerChokeMe() == false){
+			int resultOfCAC;
+			resultOfCAC = BitfieldManager.getInstance().compareAndchoose(connect.getPeerInfo());
 			if(resultOfCAC == -1) {
 				Message notInterested = new Message(MessageType.NOT_INTERESTED, null);	//Not interested
 				connect.sendMessage(notInterested);
 			}
 			else {
-				Message request = new Message(MessageType.REQUEST, payload);			//request random one
+				byte[] newPayload = Util.IntToByte(resultOfCAC);
+				Message request = new Message(MessageType.REQUEST, newPayload);			//request random one
 				connect.sendMessage(request);
 			}
 		}

@@ -13,18 +13,20 @@ public class Connection extends Thread{
 	private OutputStream outputStream;
 	private boolean correspondingPeersCompleted = false;
 	private boolean receivedHandShake = false;
-	private boolean peerChokeMe = false;
+	private boolean peerChokeMe = true;
 	private boolean peerInterestMe = false;
 	private int downloadingNumOfPeriod = 0;
+	private List<Connection> connectionList;
 
 	
 	
 	//check handshake
-	public Connection(Socket s) {
+	public Connection(Socket s, List<Connection> connectionList) {
 		try {
 			socket = s;
 			inputStream = socket.getInputStream();
 			outputStream = socket.getOutputStream();
+			this.connectionList = connectionList;
 			super.start();
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -32,12 +34,13 @@ public class Connection extends Thread{
 		
 	}
 	
-	public Connection(Socket s, PeerInfo info) {
+	public Connection(Socket s, PeerInfo info, List<Connection> connectionList) {
 		try {
 			socket = s;
 			inputStream = socket.getInputStream();
 			outputStream = socket.getOutputStream();
 			peerInfo = info;
+			this.connectionList = connectionList;
 			super.start();
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -101,8 +104,7 @@ public class Connection extends Thread{
 					case PIECE: {
 						downloadingNumOfPeriod++;
 						System.out.println("receive piece from " + peerInfo.getId());
-						MessageHandler.getInstance().handlePieceMessage(this, message);
-						// to do
+						MessageHandler.getInstance().handlePieceMessage(this, message, connectionList);
 					}
 					break;
 					default: {

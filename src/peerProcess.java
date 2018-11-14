@@ -13,20 +13,28 @@ public class peerProcess {
 		
 		serverInfo = PeerInfoManager.getInstance().getPeerInfoById(id);
 		PeerInfoManager.getInstance().setMyInfo(serverInfo);
-		//connect to peers before this server
-		connectToBeforePeer();
 		
+		//connect to peers before this server
+		try {
+			for (PeerInfo peer : PeerInfoManager.getInstance().getPeersBefore(serverInfo)) {
+				System.out.println("connect to " + peer.getHost() + " " + peer.getPort());
+				Socket socket = new Socket(peer.getHost(), peer.getPort());
+				peerConnectionList.add(new Connection(socket, peer, peerConnectionList));
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+
 		//wait for peers connect later
 		try {
-			
 			serverSocket = new ServerSocket(serverInfo.getPort());
 			for (int i = 0; i < PeerInfoManager.getInstance().getPeersAfter(serverInfo).size(); i++) {
 				
 				Socket socket = serverSocket.accept();
 				
-				peerConnectionList.add(new Connection(socket));
+				peerConnectionList.add(new Connection(socket, peerConnectionList));
 			}
-			
+
 			//start timer. Temporarily begin timer after all peers connecting
 			MyTimer mytimer = new MyTimer(peerConnectionList);
 			mytimer.startTimer();
@@ -40,15 +48,7 @@ public class peerProcess {
 	
 	public void connectToBeforePeer() {
 		
-		try {
-			for (PeerInfo peer : PeerInfoManager.getInstance().getPeersBefore(serverInfo)) {
-				System.out.println("connect to " + peer.getHost() + " " + peer.getPort());
-				Socket socket = new Socket(peer.getHost(), peer.getPort());
-				peerConnectionList.add(new Connection(socket, peer));
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+
 	}
 	
 	public static void main(String[] args) {
