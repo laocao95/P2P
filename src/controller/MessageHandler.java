@@ -171,8 +171,11 @@ public class MessageHandler {
 		connect.setNotInterested();
 	}
 	
-	public void handleRequestMessage(Connection connect, int pieceNumber) throws Exception{
-		byte[] pieceIndex = Util.IntToByte(pieceNumber);
+	public void handleRequestMessage(Connection connect, Message message) throws Exception{
+		int pieceNumber;
+		byte[] pieceIndex = new byte[4];
+		System.arraycopy(message.getPayload(), 0, pieceIndex, 0, 4);
+		pieceNumber = Util.Byte2Int(pieceIndex);
 		byte[] pieceContent = FileManager.getInstance().read(pieceNumber);
 		byte[] payload = new byte[4 + pieceContent.length];
 		System.arraycopy(pieceIndex, 0, payload, 0, 4);
