@@ -185,6 +185,7 @@ public class MessageHandler {
 		System.arraycopy(pieceContent, 0, payload, 4, pieceContent.length);			//link Index and Content
 		Message piece = new Message(MessageType.PIECE, payload);
 		connect.sendMessage(piece);
+		System.out.println("Send piece.");
 	}
 	
 	public void handlePieceMessage(Connection connect, Message message, List<Connection> connectionList) throws Exception{
@@ -196,8 +197,11 @@ public class MessageHandler {
 		System.arraycopy(payload, 4, pieceContent, 0, pieceContent.length);
 		int pieceNum = Util.Byte2Int(pieceIndex);
 		FileManager.getInstance().write(pieceNum, pieceContent);
-		PeerInfo peerInfo = connect.getPeerInfo();
+		PeerInfo peerInfo = PeerInfoManager.getInstance().getMyInfo();
 		BitfieldManager.getInstance().updateBitfield(peerInfo, pieceNum);			//update Bitfield
+		if (BitfieldManager.getInstance().isAllReceived(peerInfo)) {
+			FileManager.getInstance().finalize();
+		}
 		//broadcast have message
 		for (Connection connection : connectionList) {
 			//ensure peer receive handshake first
