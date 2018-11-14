@@ -30,7 +30,7 @@ public class FileManager {
 			dir.mkdir();
 			file.delete();			//Delete and start writing to .temp file to keep intention clean
 			file = new File(filePath + ".temp");
-			file.delete();
+			//file.delete();
 		}
 		
 	}
@@ -72,7 +72,7 @@ public class FileManager {
 	}
 	
 	public void finalize() {
-		String filePath1 = "./src/" + ArgReader.getInstance().getfileName() + "1";
+		String filePath1 = "./src/" + ArgReader.getInstance().getfileName();
 		File completedFile = new File(filePath1);				//Since we've been writing to <filePath>.temp rename to <filePath>
 		file.renameTo(completedFile);
 		file = completedFile;
