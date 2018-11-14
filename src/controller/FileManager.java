@@ -26,7 +26,7 @@ public class FileManager {
 			}
 		}
 		else {						//When we are not supposed to have the file, we do
-			File dir = new File("peer" + id);
+			File dir = new File("peer_" + id);
 			dir.mkdir();
 			file.delete();			//Delete and start writing to .temp file to keep intention clean
 			file = new File(filePath + ".temp");
@@ -52,6 +52,7 @@ public class FileManager {
 			}
 			input.read(pieceBuffer);
 			input.close();
+			System.out.println("Succeed to read piece " + piece);
 			return pieceBuffer;
 		} catch (Exception e) {
 			System.out.println("Error: could not read piece " + piece);
@@ -66,14 +67,14 @@ public class FileManager {
 			output.seek(piece * ArgReader.getInstance().getpieceSize());						//Seek to desired position
 			output.write(data);
 			output.close();
+			System.out.println("Succeed to write piece " + piece);
 		} catch (Exception e) {
 			System.out.println("Error: could not write piece " + piece);
 		}
 	}
 	
 	public void finalize() {
-		String filePath1 = "./src/" + ArgReader.getInstance().getfileName();
-		File completedFile = new File(filePath1);				//Since we've been writing to <filePath>.temp rename to <filePath>
+		File completedFile = new File(filePath);				//Since we've been writing to <filePath>.temp rename to <filePath>
 		file.renameTo(completedFile);
 		file = completedFile;
 	}
