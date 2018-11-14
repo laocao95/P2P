@@ -102,8 +102,7 @@ public class MyTimer extends Thread{
 				}
 				//randomly select one
 				if (interestedButNotInPreferredList.size() > 0) {
-					Random rnd = new Random(2);
-					Collections.shuffle(interestedButNotInPreferredList, rnd);
+					Collections.shuffle(interestedButNotInPreferredList);
 					optimisticPeer = interestedButNotInPreferredList.get(0);
 					//send unchokeMessage
 					optimisticPeer.sendMessage(new Message(MessageType.UNCHOKE, null));

@@ -42,6 +42,7 @@ public class peerProcess {
 		
 		try {
 			for (PeerInfo peer : PeerInfoManager.getInstance().getPeersBefore(serverInfo)) {
+				System.out.println("connect to " + peer.getHost() + " " + peer.getPort());
 				Socket socket = new Socket(peer.getHost(), peer.getPort());
 				peerConnectionList.add(new Connection(socket, peer));
 			}

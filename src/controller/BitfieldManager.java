@@ -62,8 +62,7 @@ public class BitfieldManager {
 		}
 		else {
 			//random choose a file piece
-			Random rnd = new Random(2);
-			Collections.shuffle(diff, rnd);
+			Collections.shuffle(diff);
 			int want = diff.get(0);
 			//record that this pieces has been required
 			requiredPieces[want] = true;
