@@ -95,7 +95,7 @@ public class Connection extends Thread{
 					case REQUEST: {
 						//when receive request, check if is choked
 						System.out.println("receive request from " + peerInfo.getId());
-						MessageHandler.getInstance().handleRequestMessage(this, BitfieldManager.getInstance().getpieceNum());							
+						MessageHandler.getInstance().handleRequestMessage(this, message);							
 					}
 					break;
 					case PIECE: {
