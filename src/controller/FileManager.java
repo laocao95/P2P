@@ -2,31 +2,31 @@ package controller;
 
 import java.io.*;
 import controller.ArgReader;
+import model.PeerInfo;
 
 public class FileManager {
-	private static FileManager instance;
+	private static class SingletonHolder {
+		public final static FileManager instance = new FileManager();
+	}
 	private String filePath;
 	private File file;
 	private FileManager() {
 		
 	}
 	public static FileManager getInstance() {
-		if (instance == null) {
-			instance = new FileManager();
-		}
-		return instance;
+		return SingletonHolder.instance;
 	}
-	public void setFile(int id, boolean haveFile) {
-		this.filePath = "peer_" + id + "/" + ArgReader.getInstance().getfileName();		//file address
+	public void setFile(PeerInfo peerInfo) {
+		this.filePath = "peer_" + peerInfo.getId() + "/" + ArgReader.getInstance().getfileName();		//file address
 		this.file = new File(filePath);
-		if(haveFile) {				//When we are supposed to have the file, we do
+		if(peerInfo.getHasFile()) {				//When we are supposed to have the file, we do
 			if(!file.exists()) {
 				System.out.println("Error: File doesn't exist.");
 				System.exit(0);
 			}
 		}
 		else {						//When we are not supposed to have the file, we do
-			File dir = new File("peer_" + id);
+			File dir = new File("peer_" + peerInfo.getId());
 			dir.mkdir();
 			file.delete();			//Delete and start writing to .temp file to keep intention clean
 			file = new File(filePath + ".temp");
@@ -62,7 +62,7 @@ public class FileManager {
 		}
 	}
 	
-	public void write(int piece, byte[] data) {
+	synchronized public void write(int piece, byte[] data) {
 		try {
 			RandomAccessFile output = new RandomAccessFile(file, "rw");			//Open RandomAccessFile to write at desired position
 			output.seek(piece * ArgReader.getInstance().getpieceSize());						//Seek to desired position

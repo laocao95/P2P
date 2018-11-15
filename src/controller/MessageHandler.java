@@ -20,6 +20,7 @@ public class MessageHandler {
 		HandShakeMessage handShakeMessage = (HandShakeMessage)message;
 		
 		if (!handShakeMessage.getHeader().equals(header)) {
+			System.out.println("error header is " + handShakeMessage.getHeader());
 			throw new Exception("error handshake header");
 		}
 		//opPeer is the handshake initiator
@@ -28,6 +29,9 @@ public class MessageHandler {
 			PeerInfo peerInfo = PeerInfoManager.getInstance().getPeerInfoById(peerId);
 			connect.setPeerInfo(peerInfo);
 			connect.setReceivedHandShake();
+			//set log
+			connect.getLogger().setOpPeer(peerInfo);
+			connect.getLogger().writeLog("TCPconnection");
 			System.out.println("receive handshake from " + connect.getPeerInfo().getId());
 			//send handshake
 			sendHandShakeMessage();
@@ -195,7 +199,7 @@ public class MessageHandler {
 		BitfieldManager.getInstance().updateBitfield(peerInfo, pieceNum);			//update Bitfield
 		if (BitfieldManager.getInstance().isAllReceived(peerInfo)) {
 			FileManager.getInstance().renameTemp();
-			peerInfo.writeLog("completionOfDownload", peerInfo);
+			connect.getLogger().writeLog("completionOfDownload");
 		}
 		//broadcast have message
 		for (Connection connection : connectionList) {

@@ -30,8 +30,9 @@ public class Connection extends Thread{
 			log = new Log();
 			messageHandler = new MessageHandler(this);
 			if (info != null) {
-				log.setOpPeer(peerInfo);
 				peerInfo = info;
+				log.setOpPeer(peerInfo);
+				log.writeLog("TCPconnection");
 			}
 			super.start();
 		} catch(Exception e) {
@@ -55,7 +56,6 @@ public class Connection extends Thread{
 				switch(type) {
 					case HANDSHAKE: {
 						messageHandler.handleHandshakeMessage(message);
-						//PeerInfoManager.getInstance().getMyInfo().writeLog("TCPconnection", peerInfo);
 					}
 					break;
 					case CHOKE: {
@@ -72,13 +72,13 @@ public class Connection extends Thread{
 					}
 					break;
 					case INTERESTED: {
-						System.out.println(peerInfo.getId() + " interst me");
+						System.out.println(peerInfo.getId() + " interest me");
 						peerInterestMe = true;
 						log.writeLog("receivingInterestedMessage");
 					}
 					break;
 					case NOT_INTERESTED: {
-						System.out.println(peerInfo.getId() + " notInterst me");
+						System.out.println(peerInfo.getId() + " notInterest me");
 						peerInterestMe = false;
 						log.writeLog("receivingNotInterestedMessage");
 					}
@@ -168,6 +168,9 @@ public class Connection extends Thread{
 	}
 	public boolean getSendedHandShake(){
 		return sendedHandShake;
+	}
+	public Log getLogger() {
+		return log;
 	}
 
 	public Message readMessage() throws Exception{

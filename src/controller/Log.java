@@ -15,12 +15,10 @@ public class Log {
 	private BufferedWriter writer;
 	private PeerInfo myInfo;
 	private PeerInfo opPeer = null;
-	private File file;
 	
 	public Log() {
 		myInfo = PeerInfoManager.getInstance().getMyInfo();
 		filePath = "log_peer_" + myInfo.getId() + ".log";		//file address
-		file = new File(filePath);
 		//set append to false to make sure over write the file when restart
 		try {
 			writer = new BufferedWriter(new FileWriter(filePath, false));
@@ -32,6 +30,10 @@ public class Log {
 		this.opPeer = opPeer;
 	}
 	public void writeLog(String logInfo) throws IOException{
+		if (opPeer == null) {
+			System.out.println("opPeer is null, can't not write the log");
+			return;
+		}
 		writer = new BufferedWriter(new FileWriter(filePath, true));
 		System.out.println("start write log.");
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
