@@ -14,6 +14,7 @@ public class peerProcess {
 		serverInfo = PeerInfoManager.getInstance().getPeerInfoById(id);
 		PeerInfoManager.getInstance().setMyInfo(serverInfo);
 		FileManager.getInstance().setFile(id, serverInfo.getHasFile());
+		//set the log file
 		serverInfo.setFile();
 		
 		//connect to peers before this server
