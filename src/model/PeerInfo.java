@@ -39,9 +39,11 @@ public class PeerInfo {
 	public void setFile() throws IOException{
 		filePath = "log_peer_" + peerID + ".log";		//file address
 		file = new File(filePath);
+		//set append to false to make sure over write the file when restart
 		writer = new BufferedWriter(new FileWriter(filePath, false));
 	}
 	public void writeLog(String logInfo, PeerInfo opPeerInfo) throws IOException{
+		writer = new BufferedWriter(new FileWriter(filePath, true));
 		int opPeerID = opPeerInfo.getId();
 		System.out.println("start write log.");
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -80,7 +82,7 @@ public class PeerInfo {
 			System.out.println(dateFormat.format(date)); 
 			writer.write("[" + dateFormat.format(date) + "]");
 			//write log
-			writer.write(": Peer [" + peerID + "] received the ‘have’ message from Peer [" + opPeerID + "].");
+			writer.write(": Peer [" + peerID + "] received the 'have' message from Peer [" + opPeerID + "].");
 			writer.newLine();
 			writer.close();
 		}
@@ -89,7 +91,7 @@ public class PeerInfo {
 			System.out.println(dateFormat.format(date)); 
 			writer.write("[" + dateFormat.format(date) + "]");
 			//write log
-			writer.write(": Peer [" + peerID + "] received the ‘interested’ message from Peer [" + opPeerID + "].");
+			writer.write(": Peer [" + peerID + "] received the 'interested' message from Peer [" + opPeerID + "].");
 			writer.newLine();
 			writer.close();
 		}
@@ -98,7 +100,7 @@ public class PeerInfo {
 			System.out.println(dateFormat.format(date)); 
 			writer.write("[" + dateFormat.format(date) + "]");
 			//write log
-			writer.write(": Peer [" + peerID + "] received the ‘not interested’ message from Peer [" + opPeerID + "].");
+			writer.write(": Peer [" + peerID + "] received the 'not interested' message from Peer [" + opPeerID + "].");
 			writer.newLine();
 			writer.close();
 		}
