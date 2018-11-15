@@ -1,7 +1,9 @@
+package controller;
 import java.net.*;
 import controller.*;
 import java.util.*;
 import model.*;
+
 public class peerProcess {
 	private ServerSocket serverSocket;
 	private List<Connection> peerConnectionList;
@@ -22,7 +24,7 @@ public class peerProcess {
 			for (PeerInfo peer : PeerInfoManager.getInstance().getPeersBefore(serverInfo)) {
 				System.out.println("connect to " + peer.getHost() + " " + peer.getPort());
 				Socket socket = new Socket(peer.getHost(), peer.getPort());
-				peerConnectionList.add(new Connection(socket, peer, peerConnectionList));
+				peerConnectionList.add(new Connection(socket, peer, this));
 				serverInfo.writeLog("TCPconnection", peer);
 			}
 		} catch(Exception e) {
@@ -36,7 +38,7 @@ public class peerProcess {
 				
 				Socket socket = serverSocket.accept();
 				
-				peerConnectionList.add(new Connection(socket, peerConnectionList));
+				peerConnectionList.add(new Connection(socket, null, this));
 			}
 
 			//start timer. Temporarily begin timer after all peers connecting
@@ -48,6 +50,11 @@ public class peerProcess {
 		} finally {
 			serverSocket.close();
 		}
+		
+
+	}
+	public List<Connection> getConnectionList() {
+		return peerConnectionList;
 	}
 	
 	public static void main(String[] args) {

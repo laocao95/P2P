@@ -7,18 +7,12 @@ import java.math.*;
 import java.util.List;
 
 public class MessageHandler {
-	private static class SingletonHolder {
-		public final static MessageHandler instance = new MessageHandler();
-	}
-	private MessageHandler() {
+	private Connection connect;
+	public MessageHandler(Connection connection) {
 		// TODO Auto-generated constructor stub
+		connect = connection;
 	}
-	
-	public static MessageHandler getInstance() {
-		return SingletonHolder.instance;
-	}
-
-	public void handleHandshakeMessage(Connection connect, Message message) throws Exception{
+	public void handleHandshakeMessage(Message message) throws Exception{
 		//check header
 		
 		String header = "P2PFILESHARINGPROJ";
@@ -28,7 +22,7 @@ public class MessageHandler {
 		if (!handShakeMessage.getHeader().equals(header)) {
 			throw new Exception("error handshake header");
 		}
-		
+		//opPeer is the handshake initiator
 		if (connect.getPeerInfo() == null) {
 			int peerId = handShakeMessage.getPeerID();
 			PeerInfo peerInfo = PeerInfoManager.getInstance().getPeerInfoById(peerId);
@@ -36,9 +30,9 @@ public class MessageHandler {
 			connect.setReceivedHandShake();
 			System.out.println("receive handshake from " + connect.getPeerInfo().getId());
 			//send handshake
-			sendHandShakeMessage(connect);
+			sendHandShakeMessage();
 			//send bitfield
-			sendBitfieldMessage(connect);
+			sendBitfieldMessage();
 		} else {
 			//I am the handshake initiator, no need to send handshake again
 			connect.setReceivedHandShake();
@@ -46,7 +40,7 @@ public class MessageHandler {
 		}	
 	}
 	
-	public void sendHandShakeMessage(Connection connect) throws Exception{
+	public void sendHandShakeMessage() throws Exception{
 		
 		String header = "P2PFILESHARINGPROJ";
 		
@@ -58,7 +52,7 @@ public class MessageHandler {
 		
 		System.out.println("send handshake message to " + connect.getPeerInfo().getId());
 	}
-	public void sendBitfieldMessage(Connection connect) throws Exception{
+	public void sendBitfieldMessage() throws Exception{
 		boolean[] myBitfield = BitfieldManager.getInstance().getBitField(PeerInfoManager.getInstance().getMyInfo());
 		int byteNum = (int) Math.ceil((double)myBitfield.length / 8);
 		byte[] payload = new byte[byteNum];
@@ -82,7 +76,7 @@ public class MessageHandler {
 		System.out.println("sendBitfiedMessage");
 	}
 	
-	public void handleBitFieldMessage(Connection connect, Message message) throws Exception{
+	public void handleBitFieldMessage(Message message) throws Exception{
 		Message bitField = (Message)message;
 		PeerInfo peerInfo = connect.getPeerInfo();
 		byte[] payLoad = bitField.getPayload();
@@ -134,7 +128,7 @@ public class MessageHandler {
 		
 	}
 	
-	public void handleHaveMessage(Connection connect, Message message) throws Exception{
+	public void handleHaveMessage(Message message) throws Exception{
 		Message have = (Message)message;
 		byte[] payLoad = have.getPayload();
 		int pieceNum = Util.Byte2Int(payLoad);
@@ -150,7 +144,7 @@ public class MessageHandler {
 		}
 	}
 	
-	public void handleUnchokedMessage(Connection connect, Message message) throws Exception{
+	public void handleUnchokedMessage(Message message) throws Exception{
 		int resultOfCAC;
 		resultOfCAC = BitfieldManager.getInstance().compareAndchoose(connect.getPeerInfo());
 		if(resultOfCAC == -1) {
@@ -164,17 +158,17 @@ public class MessageHandler {
 		}
 	}
 	
-	public void handleInterestedMessage(Connection connect) throws Exception{
+	public void handleInterestedMessage() throws Exception{
 		//Message interest = (Message)message;
 		connect.setInterested();
 	}
 	
-	public void handleUninterestedMessage(Connection connect) throws Exception{
+	public void handleUninterestedMessage() throws Exception{
 		//Message notInterest = (Message)message;
 		connect.setNotInterested();
 	}
 	
-	public void handleRequestMessage(Connection connect, Message message) throws Exception{
+	public void handleRequestMessage(Message message) throws Exception{
 		int pieceNumber;
 		byte[] pieceIndex = new byte[4];
 		System.arraycopy(message.getPayload(), 0, pieceIndex, 0, 4);
@@ -188,7 +182,7 @@ public class MessageHandler {
 		System.out.println("Send piece.");
 	}
 	
-	public int handlePieceMessage(Connection connect, Message message, List<Connection> connectionList) throws Exception{
+	public int handlePieceMessage(Message message, List<Connection> connectionList) throws Exception{
 		Message piece = (Message)message;
 		byte[] payload = piece.getPayload();
 		byte[] pieceIndex = new byte[4];
