@@ -73,7 +73,7 @@ public class FileManager {
 		}
 	}
 	
-	public void finalize() {
+	public void renameTemp() {
 		File completedFile = new File(filePath);				//Since we've been writing to <filePath>.temp rename to <filePath>
 		file.renameTo(completedFile);
 		file = completedFile;

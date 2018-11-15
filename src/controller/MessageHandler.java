@@ -200,7 +200,7 @@ public class MessageHandler {
 		PeerInfo peerInfo = PeerInfoManager.getInstance().getMyInfo();
 		BitfieldManager.getInstance().updateBitfield(peerInfo, pieceNum);			//update Bitfield
 		if (BitfieldManager.getInstance().isAllReceived(peerInfo)) {
-			FileManager.getInstance().finalize();
+			FileManager.getInstance().renameTemp();
 		}
 		//broadcast have message
 		for (Connection connection : connectionList) {
