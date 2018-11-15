@@ -68,19 +68,49 @@ public class PeerInfo {
 			
 		}
 		else if(logInfo == "receivingHaveMessage"){
-			
+			//read timer
+			System.out.println(dateFormat.format(date)); 
+			writer.write("[" + dateFormat.format(date) + "]");
+			//write log
+			writer.write(": Peer [" + peerID + "] received the ‘have’ message from Peer [" + opPeerID + "].");
+			writer.newLine();
+			writer.close();
 		}
 		else if(logInfo == "receivingInterestedMessage"){
-			
+			//read timer
+			System.out.println(dateFormat.format(date)); 
+			writer.write("[" + dateFormat.format(date) + "]");
+			//write log
+			writer.write(": Peer [" + peerID + "] received the ‘interested’ message from Peer [" + opPeerID + "].");
+			writer.newLine();
+			writer.close();
 		}
 		else if(logInfo == "receivingNotInterestedMessage"){
-			
+			//read timer
+			System.out.println(dateFormat.format(date)); 
+			writer.write("[" + dateFormat.format(date) + "]");
+			//write log
+			writer.write(": Peer [" + peerID + "] received the ‘not interested’ message from Peer [" + opPeerID + "].");
+			writer.newLine();
+			writer.close();
 		}
 		else if(logInfo == "downloadingAPiece"){
-			
+			//read timer
+			System.out.println(dateFormat.format(date)); 
+			writer.write("[" + dateFormat.format(date) + "]");
+			//write log
+			//writer.write(": Peer [" + peerID + "] has downloaded the piece [" + +"] from Peer [" + opPeerID + "].");
+			//writer.newLine();
+			writer.close();
 		}
 		else if(logInfo == "completionOfDownload"){
-			
+			//read timer
+			System.out.println(dateFormat.format(date)); 
+			writer.write("[" + dateFormat.format(date) + "]");
+			//write log
+			writer.write(": Peer [" + peerID + "] has downloaded the complete file.");
+			writer.newLine();
+			writer.close();
 		}
 	}
 }

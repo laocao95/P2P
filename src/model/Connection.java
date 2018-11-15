@@ -25,7 +25,6 @@ public class Connection extends Thread{
 	public Connection(Socket s, List<Connection> connectionList) {
 		try {
 			//create log file
-			peerInfo.setFile();
 			
 			socket = s;
 			inputStream = socket.getInputStream();
@@ -67,31 +66,37 @@ public class Connection extends Thread{
 				switch(type) {
 					case HANDSHAKE: {
 						MessageHandler.getInstance().handleHandshakeMessage(this, message);
+						//PeerInfoManager.getInstance().getMyInfo().writeLog("TCPconnection", peerInfo);
 					}
 					break;
 					case CHOKE: {
 						peerChokeMe = true;
 						System.out.println(peerInfo.getId() + " choke me");
+						PeerInfoManager.getInstance().getMyInfo().writeLog("choking", peerInfo);
 					}
 					break;
 					case UNCHOKE: {
 						peerChokeMe = false;
 						MessageHandler.getInstance().handleUnchokedMessage(this, message);
 						System.out.println(peerInfo.getId() + " unchoke me");
+						PeerInfoManager.getInstance().getMyInfo().writeLog("unchoking", peerInfo);
 					}
 					break;
 					case INTERESTED: {
 						System.out.println(peerInfo.getId() + " interst me");
 						peerInterestMe = true;
+						PeerInfoManager.getInstance().getMyInfo().writeLog("receivingInterestedMessage", peerInfo);
 					}
 					break;
 					case NOT_INTERESTED: {
 						System.out.println(peerInfo.getId() + " notInterst me");
 						peerInterestMe = false;
+						PeerInfoManager.getInstance().getMyInfo().writeLog("receivingNotInterestedMessage", peerInfo);
 					}
 					break;
 					case HAVE: {
 						MessageHandler.getInstance().handleHaveMessage(this, message);
+						PeerInfoManager.getInstance().getMyInfo().writeLog("receivingHaveMessage", peerInfo);
 					}
 					break;
 					case BITFIELD: {
@@ -107,7 +112,7 @@ public class Connection extends Thread{
 					case PIECE: {
 						downloadingNumOfPeriod++;
 						System.out.println("receive piece from " + peerInfo.getId());
-						MessageHandler.getInstance().handlePieceMessage(this, message, connectionList);
+						int pieceNum = MessageHandler.getInstance().handlePieceMessage(this, message, connectionList);
 					}
 					break;
 					default: {

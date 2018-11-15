@@ -188,7 +188,7 @@ public class MessageHandler {
 		System.out.println("Send piece.");
 	}
 	
-	public void handlePieceMessage(Connection connect, Message message, List<Connection> connectionList) throws Exception{
+	public int handlePieceMessage(Connection connect, Message message, List<Connection> connectionList) throws Exception{
 		Message piece = (Message)message;
 		byte[] payload = piece.getPayload();
 		byte[] pieceIndex = new byte[4];
@@ -201,6 +201,7 @@ public class MessageHandler {
 		BitfieldManager.getInstance().updateBitfield(peerInfo, pieceNum);			//update Bitfield
 		if (BitfieldManager.getInstance().isAllReceived(peerInfo)) {
 			FileManager.getInstance().renameTemp();
+			peerInfo.writeLog("completionOfDownload", peerInfo);
 		}
 		//broadcast have message
 		for (Connection connection : connectionList) {
@@ -223,5 +224,6 @@ public class MessageHandler {
 				connect.sendMessage(request);
 			}
 		}
+		return pieceNum;
 	}
 }
