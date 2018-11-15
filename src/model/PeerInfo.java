@@ -44,18 +44,14 @@ public class PeerInfo {
 	public void writeLog(String logInfo, PeerInfo opPeerInfo) throws IOException{
 		int opPeerID = opPeerInfo.getId();
 		System.out.println("start write log.");
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Date date = new Date();
 		if(logInfo == "TCPconnection"){
-			//BufferedWriter writer = new BufferedWriter(new FileWriter(this.filePath));
 			//read timer
-			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-			Date date = new Date();
 			System.out.println(dateFormat.format(date)); 
 			writer.write("[" + dateFormat.format(date) + "]");
+			//write log
 			writer.write(": Peer [" + peerID + "] makes a connection to Peer [" + opPeerID + "].");
-			writer.newLine();
-			writer.close();
-			writer = new BufferedWriter(new FileWriter(filePath, true));
-			writer.write("test");
 			writer.newLine();
 			writer.close();
 		}
