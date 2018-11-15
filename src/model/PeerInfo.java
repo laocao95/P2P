@@ -37,12 +37,13 @@ public class PeerInfo {
 		return file;
 	}
 	public void setFile() throws IOException{
-		this.filePath = "log_peer_" + this.peerID + ".log";		//file address
-		this.file = new File(filePath);
-		writer = new BufferedWriter(new FileWriter(this.filePath));
+		filePath = "log_peer_" + peerID + ".log";		//file address
+		file = new File(filePath);
+		writer = new BufferedWriter(new FileWriter(filePath, true));
 	}
 	public void writeLog(String logInfo, PeerInfo opPeerInfo) throws IOException{
 		int opPeerID = opPeerInfo.getId();
+		System.out.println("start write log.");
 		if(logInfo == "TCPconnection"){
 			//BufferedWriter writer = new BufferedWriter(new FileWriter(this.filePath));
 			//read timer
@@ -50,7 +51,13 @@ public class PeerInfo {
 			Date date = new Date();
 			System.out.println(dateFormat.format(date)); 
 			writer.write("[" + dateFormat.format(date) + "]");
-			writer.write(": Peer [" + peerID + "] makes a connection to Peer [" + opPeerID + "]. ");
+			writer.write(": Peer [" + peerID + "] makes a connection to Peer [" + opPeerID + "].");
+			writer.newLine();
+			writer.close();
+			writer = new BufferedWriter(new FileWriter(filePath, true));
+			writer.write("test");
+			writer.newLine();
+			writer.close();
 		}
 		else if(logInfo == "changeOfPreferredNeighbors"){
 			
