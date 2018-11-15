@@ -24,6 +24,9 @@ public class Connection extends Thread{
 	//check handshake
 	public Connection(Socket s, List<Connection> connectionList) {
 		try {
+			//create log file
+			peerInfo.setFile();
+			
 			socket = s;
 			inputStream = socket.getInputStream();
 			outputStream = socket.getOutputStream();
@@ -51,7 +54,6 @@ public class Connection extends Thread{
 	@Override
 	public void run() {
 		try {
-			
 			if (peerInfo != null) {
 				MessageHandler.getInstance().sendHandShakeMessage(this);
 				MessageHandler.getInstance().sendBitfieldMessage(this);

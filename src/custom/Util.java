@@ -1,5 +1,7 @@
 package custom;
 
+import model.PeerInfo;
+
 public class Util {
 
 	public Util() {
@@ -32,4 +34,8 @@ public class Util {
 	//byte2boolean
 	
 	//boolean2byte
+	
+	public static void writeLog(PeerInfo peerinfo, String logContent){
+		
+	}
 }

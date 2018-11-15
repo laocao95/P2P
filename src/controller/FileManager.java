@@ -31,6 +31,7 @@ public class FileManager {
 			file.delete();			//Delete and start writing to .temp file to keep intention clean
 			file = new File(filePath + ".temp");
 			//file.delete();
+			
 		}
 		
 	}
