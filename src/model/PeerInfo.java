@@ -56,16 +56,24 @@ public class PeerInfo {
 			writer.close();
 		}
 		else if(logInfo == "changeOfPreferredNeighbors"){
-			
+			writer.write("[" + dateFormat.format(date) + "]");
+			//writer.write(": Peer [" + peerID + "] has the preferred neighbors [" + MyTimer + "].");
 		}
 		else if(logInfo == "changeOfOptimisticallyUnchokedNeighbor"){
 			
 		}
 		else if(logInfo == "unchoking"){
+			writer.write("[" + dateFormat.format(date) + "]");
+			writer.write(": Peer [" + peerID + "] is unchoked by [" + opPeerID + "].");
+			writer.newLine();
+			writer.close();
 			
 		}
 		else if(logInfo == "choking"){
-			
+			writer.write("[" + dateFormat.format(date) + "]");
+			writer.write(": Peer [" + peerID + "] is unchoked by [" + opPeerID + "].");
+			writer.newLine();
+			writer.close();
 		}
 		else if(logInfo == "receivingHaveMessage"){
 			//read timer

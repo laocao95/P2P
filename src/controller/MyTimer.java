@@ -36,6 +36,9 @@ public class MyTimer extends Thread{
 	public void stopTimer() {
 		startFlag = false;
 	}
+	public List<Connection> getPreferedList() {
+		return preferedList;
+	}
 	
 	@Override
 	public void run() {
