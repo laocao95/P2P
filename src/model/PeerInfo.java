@@ -39,7 +39,7 @@ public class PeerInfo {
 	public void setFile() throws IOException{
 		filePath = "log_peer_" + peerID + ".log";		//file address
 		file = new File(filePath);
-		writer = new BufferedWriter(new FileWriter(filePath, true));
+		writer = new BufferedWriter(new FileWriter(filePath, false));
 	}
 	public void writeLog(String logInfo, PeerInfo opPeerInfo) throws IOException{
 		int opPeerID = opPeerInfo.getId();
@@ -71,7 +71,7 @@ public class PeerInfo {
 		}
 		else if(logInfo == "choking"){
 			writer.write("[" + dateFormat.format(date) + "]");
-			writer.write(": Peer [" + peerID + "] is unchoked by [" + opPeerID + "].");
+			writer.write(": Peer [" + peerID + "] is choked by [" + opPeerID + "].");
 			writer.newLine();
 			writer.close();
 		}
