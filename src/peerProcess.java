@@ -14,6 +14,7 @@ public class peerProcess {
 		serverInfo = PeerInfoManager.getInstance().getPeerInfoById(id);
 		PeerInfoManager.getInstance().setMyInfo(serverInfo);
 		FileManager.getInstance().setFile(id, serverInfo.getHasFile());
+		serverInfo.setFile();
 		
 		//connect to peers before this server
 		try {
@@ -21,6 +22,7 @@ public class peerProcess {
 				System.out.println("connect to " + peer.getHost() + " " + peer.getPort());
 				Socket socket = new Socket(peer.getHost(), peer.getPort());
 				peerConnectionList.add(new Connection(socket, peer, peerConnectionList));
+				serverInfo.writeLog("TCPconnection", peer);
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
