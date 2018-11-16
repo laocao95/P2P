@@ -198,7 +198,7 @@ public class MessageHandler {
 		FileManager.getInstance().write(pieceNum, pieceContent);
 		PeerInfo peerInfo = PeerInfoManager.getInstance().getMyInfo();
 		BitfieldManager.getInstance().updateBitfield(peerInfo, pieceNum);			//update Bitfield
-		connect.getLogger().writeLog(LogType.DownloadingAPiece, null);
+		connect.getLogger().writeLog(LogType.DownloadingAPiece, pieceNum);
 		if (BitfieldManager.getInstance().isAllReceived(peerInfo)) {
 			FileManager.getInstance().renameTemp();
 			connect.getLogger().writeLog(LogType.CompletionOfDownload, null);
