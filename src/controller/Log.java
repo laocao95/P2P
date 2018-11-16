@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+
 import custom.Config.*;
 
 import custom.Config;
@@ -53,11 +55,14 @@ public class Log {
 			break;
 			case ChangeOfPreferredNeighbor :{
 				writer.write("[" + dateFormat.format(date) + "]");
-				//writer.write(": Peer [" + peerID + "] has the preferred neighbors [" + MyTimer + "].");
+				String preferredNeighbour = (String) args;
+				writer.write(": Peer [" + myInfo.getId() + "] has the preferred neighbors [" + preferredNeighbour + "].");
 			}
 			break;
 			case ChangeOfOptUnchokedNeighbor :{
-				
+				writer.write("[" + dateFormat.format(date) + "]");
+				String opUnchokedNeighbour = (String) args;
+				writer.write(": Peer [" + myInfo.getId() + "] has the optimistically unchoked neighbor [Optimistically unchoked neighbour " + opUnchokedNeighbour + "].");
 			}
 			break;
 			case Unchoking :{
