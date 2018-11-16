@@ -198,9 +198,10 @@ public class MessageHandler {
 		FileManager.getInstance().write(pieceNum, pieceContent);
 		PeerInfo peerInfo = PeerInfoManager.getInstance().getMyInfo();
 		BitfieldManager.getInstance().updateBitfield(peerInfo, pieceNum);			//update Bitfield
+		connect.getLogger().writeLog(LogType.DownloadingAPiece, null);
 		if (BitfieldManager.getInstance().isAllReceived(peerInfo)) {
 			FileManager.getInstance().renameTemp();
-			connect.getLogger().writeLog(LogType.CompletionOfDownload, pieceNum);
+			connect.getLogger().writeLog(LogType.CompletionOfDownload, null);
 		}
 		//broadcast have message
 		for (Connection connection : connectionList) {
