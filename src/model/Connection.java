@@ -32,7 +32,7 @@ public class Connection extends Thread{
 			if (info != null) {
 				peerInfo = info;
 				log.setOpPeer(peerInfo);
-				log.writeLog("TCPconnection");
+				log.writeLog(LogType.TCPConnection);
 			}
 			super.start();
 		} catch(Exception e) {
@@ -61,31 +61,31 @@ public class Connection extends Thread{
 					case CHOKE: {
 						peerChokeMe = true;
 						System.out.println(peerInfo.getId() + " choke me");
-						log.writeLog("choking");
+						log.writeLog(LogType.Choking);
 					}
 					break;
 					case UNCHOKE: {
 						peerChokeMe = false;
 						messageHandler.handleUnchokedMessage(message);
 						System.out.println(peerInfo.getId() + " unchoke me");
-						log.writeLog("unchoking");
+						log.writeLog(LogType.Unchoking);
 					}
 					break;
 					case INTERESTED: {
 						System.out.println(peerInfo.getId() + " interest me");
 						peerInterestMe = true;
-						log.writeLog("receivingInterestedMessage");
+						log.writeLog(LogType.ReceivingInterestedMessage);
 					}
 					break;
 					case NOT_INTERESTED: {
 						System.out.println(peerInfo.getId() + " notInterest me");
 						peerInterestMe = false;
-						log.writeLog("receivingNotInterestedMessage");
+						log.writeLog(LogType.ReceivingNotInterestedMessage);
 					}
 					break;
 					case HAVE: {
 						messageHandler.handleHaveMessage(message);
-						log.writeLog("receivingHaveMessage");
+						log.writeLog(LogType.ReceivingHaveMessage);
 					}
 					break;
 					case BITFIELD: {

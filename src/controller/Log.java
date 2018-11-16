@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import custom.Config.*;
 
+import custom.Config;
 import model.PeerInfo;
 
 public class Log {
@@ -29,7 +31,7 @@ public class Log {
 	public void setOpPeer(PeerInfo opPeer) {
 		this.opPeer = opPeer;
 	}
-	public void writeLog(String logInfo) throws IOException{
+	public void writeLog(LogType logType) throws IOException{
 		if (opPeer == null) {
 			System.out.println("opPeer is null, can't not write the log");
 			return;
@@ -38,7 +40,7 @@ public class Log {
 		System.out.println("start write log.");
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
-		if(logInfo.equals("TCPconnection")){
+		if(logType == LogType.TCPConnection){
 			//read timer
 			System.out.println(dateFormat.format(date)); 
 			writer.write("[" + dateFormat.format(date) + "]");
@@ -47,27 +49,27 @@ public class Log {
 			writer.newLine();
 			writer.close();
 		}
-		else if(logInfo.equals("changeOfPreferredNeighbors")){
+		else if(logType == LogType.ChangeOfPreferredNeighbor){
 			writer.write("[" + dateFormat.format(date) + "]");
 			//writer.write(": Peer [" + peerID + "] has the preferred neighbors [" + MyTimer + "].");
 		}
-		else if(logInfo.equals("changeOfOptimisticallyUnchokedNeighbor")){
+		else if(logType == LogType.ChangeOfOptUnchokedNeighbor){
 			
 		}
-		else if(logInfo.equals("unchoking")){
+		else if(logType == LogType.Unchoking){
 			writer.write("[" + dateFormat.format(date) + "]");
 			writer.write(": Peer [" + myInfo.getId() + "] is unchoked by [" + opPeer.getId() + "].");
 			writer.newLine();
 			writer.close();
 			
 		}
-		else if(logInfo.equals("choking")){
+		else if(logType == LogType.Choking){
 			writer.write("[" + dateFormat.format(date) + "]");
 			writer.write(": Peer [" + myInfo.getId() + "] is choked by [" + opPeer.getId() + "].");
 			writer.newLine();
 			writer.close();
 		}
-		else if(logInfo.equals("receivingHaveMessage")){
+		else if(logType == LogType.ReceivingHaveMessage){
 			//read timer
 			System.out.println(dateFormat.format(date)); 
 			writer.write("[" + dateFormat.format(date) + "]");
@@ -76,7 +78,7 @@ public class Log {
 			writer.newLine();
 			writer.close();
 		}
-		else if(logInfo.equals("receivingInterestedMessage")){
+		else if(logType == LogType.ReceivingInterestedMessage){
 			//read timer
 			System.out.println(dateFormat.format(date)); 
 			writer.write("[" + dateFormat.format(date) + "]");
@@ -85,7 +87,7 @@ public class Log {
 			writer.newLine();
 			writer.close();
 		}
-		else if(logInfo.equals("receivingNotInterestedMessage")){
+		else if(logType == LogType.ReceivingNotInterestedMessage){
 			//read timer
 			System.out.println(dateFormat.format(date)); 
 			writer.write("[" + dateFormat.format(date) + "]");
@@ -94,7 +96,7 @@ public class Log {
 			writer.newLine();
 			writer.close();
 		}
-		else if(logInfo.equals("downloadingAPiece")){
+		else if(logType == LogType.DownloadingAPiece){
 			//read timer
 			System.out.println(dateFormat.format(date)); 
 			writer.write("[" + dateFormat.format(date) + "]");
@@ -103,7 +105,7 @@ public class Log {
 			//writer.newLine();
 			writer.close();
 		}
-		else if(logInfo.equals("completionOfDownload")){
+		else if(logType == LogType.CompletionOfDownload){
 			//read timer
 			System.out.println(dateFormat.format(date)); 
 			writer.write("[" + dateFormat.format(date) + "]");

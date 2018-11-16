@@ -5,6 +5,7 @@ import custom.*;
 import custom.Config.MessageType;
 import java.math.*;
 import java.util.List;
+import custom.Config.*;
 
 public class MessageHandler {
 	private Connection connect;
@@ -31,7 +32,7 @@ public class MessageHandler {
 			connect.setReceivedHandShake();
 			//set log
 			connect.getLogger().setOpPeer(peerInfo);
-			connect.getLogger().writeLog("TCPconnection");
+			connect.getLogger().writeLog(LogType.TCPConnection);
 			System.out.println("receive handshake from " + connect.getPeerInfo().getId());
 			//send handshake
 			sendHandShakeMessage();
@@ -199,7 +200,7 @@ public class MessageHandler {
 		BitfieldManager.getInstance().updateBitfield(peerInfo, pieceNum);			//update Bitfield
 		if (BitfieldManager.getInstance().isAllReceived(peerInfo)) {
 			FileManager.getInstance().renameTemp();
-			connect.getLogger().writeLog("completionOfDownload");
+			connect.getLogger().writeLog(LogType.CompletionOfDownload);
 		}
 		//broadcast have message
 		for (Connection connection : connectionList) {
