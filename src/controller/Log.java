@@ -31,7 +31,7 @@ public class Log {
 	public void setOpPeer(PeerInfo opPeer) {
 		this.opPeer = opPeer;
 	}
-	public void writeLog(LogType logType) throws IOException{
+	public void writeLog(LogType logType, Object args) throws IOException{
 		if (opPeer == null) {
 			System.out.println("opPeer is null, can't not write the log");
 			return;
@@ -109,8 +109,9 @@ public class Log {
 				System.out.println(dateFormat.format(date)); 
 				writer.write("[" + dateFormat.format(date) + "]");
 				//write log
-				//writer.write(": Peer [" + peerID + "] has downloaded the piece [" + +"] from Peer [" + opPeerID + "].");
-				//writer.newLine();
+				Integer pieceNum = (Integer)args;
+				writer.write(": Peer [" + myInfo.getId() + "] has downloaded the piece [" + pieceNum +"] from Peer [" + opPeer.getId() + "].");
+				writer.newLine();
 				writer.close();
 			}
 			break;

@@ -32,7 +32,7 @@ public class MessageHandler {
 			connect.setReceivedHandShake();
 			//set log
 			connect.getLogger().setOpPeer(peerInfo);
-			connect.getLogger().writeLog(LogType.TCPConnection);
+			connect.getLogger().writeLog(LogType.TCPConnection, null);
 			System.out.println("receive handshake from " + connect.getPeerInfo().getId());
 			//send handshake
 			sendHandShakeMessage();
@@ -200,7 +200,7 @@ public class MessageHandler {
 		BitfieldManager.getInstance().updateBitfield(peerInfo, pieceNum);			//update Bitfield
 		if (BitfieldManager.getInstance().isAllReceived(peerInfo)) {
 			FileManager.getInstance().renameTemp();
-			connect.getLogger().writeLog(LogType.CompletionOfDownload);
+			connect.getLogger().writeLog(LogType.CompletionOfDownload, pieceNum);
 		}
 		//broadcast have message
 		for (Connection connection : connectionList) {
