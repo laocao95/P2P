@@ -24,13 +24,13 @@ public class MessageHandler {
 			throw new Exception("error handshake header");
 		}
 		//opPeer is the handshake initiator
-		if (connect.getPeerInfo() == null) {
+		if (connect.getOpPeer() == null) {
 			int peerId = handShakeMessage.getPeerID();
 			PeerInfo peerInfo = PeerInfoManager.getInstance().getPeerInfoById(peerId);
-			connect.setPeerInfo(peerInfo);
+			connect.setOpPeer(peerInfo);
 			connect.setReceivedHandShake();
 			connect.getLogger().writeLog(LogType.TCPConnection, peerInfo, null);
-			System.out.println("receive handshake from " + connect.getPeerInfo().getId());
+			System.out.println("receive handshake from " + connect.getOpPeer().getId());
 			//send handshake
 			sendHandShakeMessage();
 			//send bitfield
@@ -38,7 +38,7 @@ public class MessageHandler {
 		} else {
 			//I am the handshake initiator, no need to send handshake again
 			connect.setReceivedHandShake();
-			System.out.println("receive handshake from " + connect.getPeerInfo().getId());
+			System.out.println("receive handshake from " + connect.getOpPeer().getId());
 		}
 	}
 	
@@ -52,7 +52,7 @@ public class MessageHandler {
 		
 		connect.setSendedHandShake();
 		
-		System.out.println("send handshake message to " + connect.getPeerInfo().getId());
+		System.out.println("send handshake message to " + connect.getOpPeer().getId());
 	}
 	public void sendBitfieldMessage() throws Exception{
 		boolean[] myBitfield = BitfieldManager.getInstance().getBitField(PeerInfoManager.getInstance().getMyInfo());
@@ -80,7 +80,7 @@ public class MessageHandler {
 	
 	public void handleBitFieldMessage(Message message) throws Exception{
 		Message bitField = (Message)message;
-		PeerInfo peerInfo = connect.getPeerInfo();
+		PeerInfo peerInfo = connect.getOpPeer();
 		byte[] payLoad = bitField.getPayload();
 		int pieceNum = BitfieldManager.getInstance().getpieceNum();
 		int byteNum = (int)Math.ceil((double)pieceNum/8);
@@ -134,7 +134,7 @@ public class MessageHandler {
 		Message have = (Message)message;
 		byte[] payLoad = have.getPayload();
 		int pieceNum = Util.Byte2Int(payLoad);
-		PeerInfo peerInfo = connect.getPeerInfo();
+		PeerInfo peerInfo = connect.getOpPeer();
 		BitfieldManager.getInstance().updateBitfield(peerInfo, pieceNum);
 		if (BitfieldManager.getInstance().comparePeerInfo(peerInfo)){
 			Message interested = new Message(MessageType.INTERESTED, null);
@@ -148,7 +148,7 @@ public class MessageHandler {
 	
 	public void handleUnchokedMessage(Message message) throws Exception{
 		int resultOfCAC;
-		resultOfCAC = BitfieldManager.getInstance().compareAndchoose(connect.getPeerInfo());
+		resultOfCAC = BitfieldManager.getInstance().compareAndchoose(connect.getOpPeer());
 		if(resultOfCAC == -1) {
 			Message notInterested = new Message(MessageType.NOT_INTERESTED, null);
 			connect.sendMessage(notInterested);
@@ -195,10 +195,10 @@ public class MessageHandler {
 		FileManager.getInstance().write(pieceNum, pieceContent);
 		PeerInfo peerInfo = PeerInfoManager.getInstance().getMyInfo();
 		BitfieldManager.getInstance().updateBitfield(peerInfo, pieceNum);			//update Bitfield
-		Log.getInstance().writeLog(LogType.DownloadingAPiece, connect.getPeerInfo(), pieceNum);
+		Log.getInstance().writeLog(LogType.DownloadingAPiece, connect.getOpPeer(), pieceNum);
 		if (BitfieldManager.getInstance().isAllReceived(peerInfo)) {
 			FileManager.getInstance().renameTemp();
-			Log.getInstance().writeLog(LogType.CompletionOfDownload, connect.getPeerInfo(), null);
+			Log.getInstance().writeLog(LogType.CompletionOfDownload, connect.getOpPeer(), null);
 		}
 		//broadcast have message
 		for (Connection connection : connectionList) {
@@ -210,7 +210,7 @@ public class MessageHandler {
 		}
 		if (connect.getpeerChokeMe() == false){
 			int resultOfCAC;
-			resultOfCAC = BitfieldManager.getInstance().compareAndchoose(connect.getPeerInfo());
+			resultOfCAC = BitfieldManager.getInstance().compareAndchoose(connect.getOpPeer());
 			if(resultOfCAC == -1) {
 				Message notInterested = new Message(MessageType.NOT_INTERESTED, null);	//Not interested
 				connect.sendMessage(notInterested);

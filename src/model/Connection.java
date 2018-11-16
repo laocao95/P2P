@@ -8,7 +8,7 @@ import custom.Config.*;
 
 public class Connection extends Thread{
 	private Socket socket;
-	private PeerInfo peerInfo = null;
+	private PeerInfo opPeerInfo = null;
 	private InputStream inputStream;
 	private OutputStream outputStream;
 	private boolean correspondingPeersCompleted = false;
@@ -30,8 +30,8 @@ public class Connection extends Thread{
 			log = Log.getInstance();
 			messageHandler = new MessageHandler(this);
 			if (info != null) {
-				peerInfo = info;
-				log.writeLog(LogType.TCPConnection, peerInfo, null);
+				opPeerInfo = info;
+				log.writeLog(LogType.TCPConnection, opPeerInfo, null);
 			}
 			super.start();
 		} catch(Exception e) {
@@ -42,7 +42,7 @@ public class Connection extends Thread{
 	@Override
 	public void run() {
 		try {
-			if (peerInfo != null) {
+			if (opPeerInfo != null) {
 				messageHandler.sendHandShakeMessage();
 				messageHandler.sendBitfieldMessage();
 			}
@@ -59,32 +59,32 @@ public class Connection extends Thread{
 					break;
 					case CHOKE: {
 						peerChokeMe = true;
-						System.out.println(peerInfo.getId() + " choke me");
-						log.writeLog(LogType.Choking, peerInfo, null);
+						System.out.println(opPeerInfo.getId() + " choke me");
+						log.writeLog(LogType.Choking, opPeerInfo, null);
 					}
 					break;
 					case UNCHOKE: {
 						peerChokeMe = false;
 						messageHandler.handleUnchokedMessage(message);
-						System.out.println(peerInfo.getId() + " unchoke me");
-						log.writeLog(LogType.Unchoking, peerInfo, null);
+						System.out.println(opPeerInfo.getId() + " unchoke me");
+						log.writeLog(LogType.Unchoking, opPeerInfo, null);
 					}
 					break;
 					case INTERESTED: {
-						System.out.println(peerInfo.getId() + " interest me");
+						System.out.println(opPeerInfo.getId() + " interest me");
 						peerInterestMe = true;
-						log.writeLog(LogType.ReceivingInterestedMessage, peerInfo, null);
+						log.writeLog(LogType.ReceivingInterestedMessage, opPeerInfo, null);
 					}
 					break;
 					case NOT_INTERESTED: {
-						System.out.println(peerInfo.getId() + " notInterest me");
+						System.out.println(opPeerInfo.getId() + " notInterest me");
 						peerInterestMe = false;
-						log.writeLog(LogType.ReceivingNotInterestedMessage, peerInfo, null);
+						log.writeLog(LogType.ReceivingNotInterestedMessage, opPeerInfo, null);
 					}
 					break;
 					case HAVE: {
 						messageHandler.handleHaveMessage(message);
-						log.writeLog(LogType.ReceivingHaveMessage, peerInfo, null);
+						log.writeLog(LogType.ReceivingHaveMessage, opPeerInfo, null);
 					}
 					break;
 					case BITFIELD: {
@@ -93,13 +93,13 @@ public class Connection extends Thread{
 					break;
 					case REQUEST: {
 						//when receive request, check if is choked
-						System.out.println("receive request from " + peerInfo.getId());
+						System.out.println("receive request from " + opPeerInfo.getId());
 						messageHandler.handleRequestMessage(message);							
 					}
 					break;
 					case PIECE: {
 						downloadingNumOfPeriod++;
-						System.out.println("receive piece from " + peerInfo.getId());
+						System.out.println("receive piece from " + opPeerInfo.getId());
 						messageHandler.handlePieceMessage(message, processController.getConnectionList());
 					}
 					break;
@@ -115,12 +115,12 @@ public class Connection extends Thread{
 			System.out.println(e);
 		}
 	}
-	public void setPeerInfo(PeerInfo info) {
-		peerInfo = info;
+	public void setOpPeer(PeerInfo info) {
+		opPeerInfo = info;
 	}
 	
-	public PeerInfo getPeerInfo() {
-		return peerInfo;
+	public PeerInfo getOpPeer() {
+		return opPeerInfo;
 	}
 
 	public void sendMessage(Message message) {
@@ -187,7 +187,7 @@ public class Connection extends Thread{
 			return new HandShakeMessage(header, peerID);
 			
 		} else {
-			System.out.println("waiting for coming message from " + peerInfo.getId());
+			System.out.println("waiting for coming message from " + opPeerInfo.getId());
 
 			while (inputStream.available() < 5) {
 				//wait for header and length byte

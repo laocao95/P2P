@@ -108,7 +108,7 @@ public class MyTimer extends Thread{
 				String logStr = "";
 				for (int i = 0; i < newPreferedList.size(); i++) {
 					Connection connection = newPreferedList.get(i);
-					logStr += connection.getPeerInfo().getId();
+					logStr += connection.getOpPeer().getId();
 					if (i != newPreferedList.size() - 1) {
 						logStr += ",";
 					}
@@ -135,7 +135,7 @@ public class MyTimer extends Thread{
 					optimisticPeer = interestedButNotInPreferredList.get(0);
 					//send unchokeMessage
 					optimisticPeer.sendMessage(new Message(MessageType.UNCHOKE, null));
-					Log.getInstance().writeLog(LogType.ChangeOfOptUnchokedNeighbor, optimisticPeer.getPeerInfo(), null);
+					Log.getInstance().writeLog(LogType.ChangeOfOptUnchokedNeighbor, optimisticPeer.getOpPeer(), null);
 				}
 				
 			}
