@@ -206,8 +206,8 @@ public class MessageHandler {
 		Log.getInstance().writeLog(LogType.DownloadingAPiece, connect.getOpPeer(), pieceNum);
 		//broadcast have message
 		for (Connection connection : connectionList) {
-			//ensure peer receive handshake first
-			if (connection.getReceivedHandShake()) {
+			//ensure peer send handshake first and connection is still running
+			if (connection.getSendedHandShake() && !connection.getFinish()) {
 				Message have = new Message(MessageType.HAVE, payload);					//send have Piece number
 				connection.sendMessage(have);
 			}
@@ -216,6 +216,8 @@ public class MessageHandler {
 		if (BitfieldManager.getInstance().isAllReceived(peerInfo)) {
 			FileManager.getInstance().renameTemp();
 			Log.getInstance().writeLog(LogType.CompletionOfDownload, connect.getOpPeer(), null);
+			Message notInterested = new Message(MessageType.NOT_INTERESTED, null);	//Not interested
+			connect.sendMessage(notInterested);
 			//if opPeer receive all piece
 			if (BitfieldManager.getInstance().isAllReceived(connect.getOpPeer())) {
 				connect.setFinish(); //stop read message for this connection
