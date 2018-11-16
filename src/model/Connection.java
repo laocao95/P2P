@@ -102,7 +102,7 @@ public class Connection extends Thread{
 						downloadingNumOfPeriod++;
 						System.out.println("receive piece from " + peerInfo.getId());
 						int pieceNum = messageHandler.handlePieceMessage(message, processController.getConnectionList());
-						log.writeLog(LogType.ReceivingHaveMessage, pieceNum);
+						log.writeLog(LogType.DownloadingAPiece, pieceNum);
 					}
 					break;
 					default: {
