@@ -3,7 +3,6 @@ package controller;
 import model.*;
 import custom.*;
 import custom.Config.MessageType;
-import java.math.*;
 import java.util.List;
 import custom.Config.*;
 
@@ -30,9 +29,7 @@ public class MessageHandler {
 			PeerInfo peerInfo = PeerInfoManager.getInstance().getPeerInfoById(peerId);
 			connect.setPeerInfo(peerInfo);
 			connect.setReceivedHandShake();
-			//set log
-			connect.getLogger().setOpPeer(peerInfo);
-			connect.getLogger().writeLog(LogType.TCPConnection, null);
+			connect.getLogger().writeLog(LogType.TCPConnection, peerInfo, null);
 			System.out.println("receive handshake from " + connect.getPeerInfo().getId());
 			//send handshake
 			sendHandShakeMessage();
@@ -187,7 +184,7 @@ public class MessageHandler {
 		System.out.println("Send piece.");
 	}
 	
-	public int handlePieceMessage(Message message, List<Connection> connectionList) throws Exception{
+	public void handlePieceMessage(Message message, List<Connection> connectionList) throws Exception{
 		Message piece = (Message)message;
 		byte[] payload = piece.getPayload();
 		byte[] pieceIndex = new byte[4];
@@ -198,10 +195,10 @@ public class MessageHandler {
 		FileManager.getInstance().write(pieceNum, pieceContent);
 		PeerInfo peerInfo = PeerInfoManager.getInstance().getMyInfo();
 		BitfieldManager.getInstance().updateBitfield(peerInfo, pieceNum);			//update Bitfield
-		connect.getLogger().writeLog(LogType.DownloadingAPiece, pieceNum);
+		Log.getInstance().writeLog(LogType.DownloadingAPiece, connect.getPeerInfo(), pieceNum);
 		if (BitfieldManager.getInstance().isAllReceived(peerInfo)) {
 			FileManager.getInstance().renameTemp();
-			connect.getLogger().writeLog(LogType.CompletionOfDownload, null);
+			Log.getInstance().writeLog(LogType.CompletionOfDownload, connect.getPeerInfo(), null);
 		}
 		//broadcast have message
 		for (Connection connection : connectionList) {
@@ -224,6 +221,5 @@ public class MessageHandler {
 				connect.sendMessage(request);
 			}
 		}
-		return pieceNum;
 	}
 }

@@ -1,9 +1,7 @@
 package controller;
-import java.io.*;
 import java.util.*;
 import model.*;
 import custom.*;
-import java.math.*;
 
 public class BitfieldManager {
 	private static class SingletonHolder {

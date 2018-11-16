@@ -1,15 +1,12 @@
 package controller;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
 import custom.Config.LogType;
 import custom.Config.MessageType;
 import model.Connection;
 import model.Message;
-import model.PeerInfo;
 
 public class MyTimer extends Thread{
 	private List<Connection> connectionList;
@@ -54,7 +51,6 @@ public class MyTimer extends Thread{
 				lastUnchokingTime = currentMillis;
 				List<Connection> interestedList = new ArrayList<>();
 				List<Connection> newPreferedList = new ArrayList<>();
-				List<PeerInfo> newPreferedNeighbor = new ArrayList<>();
 				//select interest list
 				for (Connection connection : connectionList) {
 					if (connection.getInterestedFlag()) {
@@ -89,7 +85,6 @@ public class MyTimer extends Thread{
 							}
 						}
 					}
-					
 					for (Connection connection : newPreferedList) {
 						if (!preferedList.contains(connection)) {
 							//not in previous preferredList, send unchokeMessage
@@ -118,6 +113,7 @@ public class MyTimer extends Thread{
 						logStr += ",";
 					}
 				}
+				Log.getInstance().writeLog(LogType.ChangeOfPreferredNeighbor, null, logStr);
 				//connectionList.get(0).getLogger().writeLog(Type.wri);
 				//set the newPreferedList as preferedList
 				preferedList = newPreferedList;
@@ -139,6 +135,7 @@ public class MyTimer extends Thread{
 					optimisticPeer = interestedButNotInPreferredList.get(0);
 					//send unchokeMessage
 					optimisticPeer.sendMessage(new Message(MessageType.UNCHOKE, null));
+					Log.getInstance().writeLog(LogType.ChangeOfOptUnchokedNeighbor, optimisticPeer.getPeerInfo(), null);
 				}
 				
 			}

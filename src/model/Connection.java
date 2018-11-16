@@ -27,12 +27,11 @@ public class Connection extends Thread{
 			inputStream = socket.getInputStream();
 			outputStream = socket.getOutputStream();
 			processController = controller;
-			log = new Log();
+			log = Log.getInstance();
 			messageHandler = new MessageHandler(this);
 			if (info != null) {
 				peerInfo = info;
-				log.setOpPeer(peerInfo);
-				log.writeLog(LogType.TCPConnection, null);
+				log.writeLog(LogType.TCPConnection, peerInfo, null);
 			}
 			super.start();
 		} catch(Exception e) {
@@ -61,31 +60,31 @@ public class Connection extends Thread{
 					case CHOKE: {
 						peerChokeMe = true;
 						System.out.println(peerInfo.getId() + " choke me");
-						log.writeLog(LogType.Choking, null);
+						log.writeLog(LogType.Choking, peerInfo, null);
 					}
 					break;
 					case UNCHOKE: {
 						peerChokeMe = false;
 						messageHandler.handleUnchokedMessage(message);
 						System.out.println(peerInfo.getId() + " unchoke me");
-						log.writeLog(LogType.Unchoking, null);
+						log.writeLog(LogType.Unchoking, peerInfo, null);
 					}
 					break;
 					case INTERESTED: {
 						System.out.println(peerInfo.getId() + " interest me");
 						peerInterestMe = true;
-						log.writeLog(LogType.ReceivingInterestedMessage, null);
+						log.writeLog(LogType.ReceivingInterestedMessage, peerInfo, null);
 					}
 					break;
 					case NOT_INTERESTED: {
 						System.out.println(peerInfo.getId() + " notInterest me");
 						peerInterestMe = false;
-						log.writeLog(LogType.ReceivingNotInterestedMessage, null);
+						log.writeLog(LogType.ReceivingNotInterestedMessage, peerInfo, null);
 					}
 					break;
 					case HAVE: {
 						messageHandler.handleHaveMessage(message);
-						log.writeLog(LogType.ReceivingHaveMessage, null);
+						log.writeLog(LogType.ReceivingHaveMessage, peerInfo, null);
 					}
 					break;
 					case BITFIELD: {
@@ -101,7 +100,7 @@ public class Connection extends Thread{
 					case PIECE: {
 						downloadingNumOfPeriod++;
 						System.out.println("receive piece from " + peerInfo.getId());
-						int pieceNum = messageHandler.handlePieceMessage(message, processController.getConnectionList());
+						messageHandler.handlePieceMessage(message, processController.getConnectionList());
 					}
 					break;
 					default: {

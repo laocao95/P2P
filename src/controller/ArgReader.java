@@ -1,7 +1,5 @@
 package controller;
 import java.io.*;
-import java.util.*;
-import model.*;
 
 public class ArgReader {
 	private int NumberOfPreferredNeighbors;
