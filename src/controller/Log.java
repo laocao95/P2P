@@ -40,79 +40,90 @@ public class Log {
 		System.out.println("start write log.");
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
-		if(logType == LogType.TCPConnection){
-			//read timer
-			System.out.println(dateFormat.format(date)); 
-			writer.write("[" + dateFormat.format(date) + "]");
-			//write log
-			writer.write(": Peer [" + myInfo.getId() + "] makes a connection to Peer [" + opPeer.getId() + "].");
-			writer.newLine();
-			writer.close();
-		}
-		else if(logType == LogType.ChangeOfPreferredNeighbor){
-			writer.write("[" + dateFormat.format(date) + "]");
-			//writer.write(": Peer [" + peerID + "] has the preferred neighbors [" + MyTimer + "].");
-		}
-		else if(logType == LogType.ChangeOfOptUnchokedNeighbor){
-			
-		}
-		else if(logType == LogType.Unchoking){
-			writer.write("[" + dateFormat.format(date) + "]");
-			writer.write(": Peer [" + myInfo.getId() + "] is unchoked by [" + opPeer.getId() + "].");
-			writer.newLine();
-			writer.close();
-			
-		}
-		else if(logType == LogType.Choking){
-			writer.write("[" + dateFormat.format(date) + "]");
-			writer.write(": Peer [" + myInfo.getId() + "] is choked by [" + opPeer.getId() + "].");
-			writer.newLine();
-			writer.close();
-		}
-		else if(logType == LogType.ReceivingHaveMessage){
-			//read timer
-			System.out.println(dateFormat.format(date)); 
-			writer.write("[" + dateFormat.format(date) + "]");
-			//write log
-			writer.write(": Peer [" + myInfo.getId() + "] received the 'have' message from Peer [" + opPeer.getId() + "].");
-			writer.newLine();
-			writer.close();
-		}
-		else if(logType == LogType.ReceivingInterestedMessage){
-			//read timer
-			System.out.println(dateFormat.format(date)); 
-			writer.write("[" + dateFormat.format(date) + "]");
-			//write log
-			writer.write(": Peer [" + myInfo.getId() + "] received the 'interested' message from Peer [" + opPeer.getId() + "].");
-			writer.newLine();
-			writer.close();
-		}
-		else if(logType == LogType.ReceivingNotInterestedMessage){
-			//read timer
-			System.out.println(dateFormat.format(date)); 
-			writer.write("[" + dateFormat.format(date) + "]");
-			//write log
-			writer.write(": Peer [" + myInfo.getId() + "] received the 'not interested' message from Peer [" + opPeer.getId() + "].");
-			writer.newLine();
-			writer.close();
-		}
-		else if(logType == LogType.DownloadingAPiece){
-			//read timer
-			System.out.println(dateFormat.format(date)); 
-			writer.write("[" + dateFormat.format(date) + "]");
-			//write log
-			//writer.write(": Peer [" + peerID + "] has downloaded the piece [" + +"] from Peer [" + opPeerID + "].");
-			//writer.newLine();
-			writer.close();
-		}
-		else if(logType == LogType.CompletionOfDownload){
-			//read timer
-			System.out.println(dateFormat.format(date)); 
-			writer.write("[" + dateFormat.format(date) + "]");
-			//write log
-			writer.write(": Peer [" + myInfo.getId() + "] has downloaded the complete file.");
-			writer.newLine();
-			writer.close();
+		switch(logType){
+			case TCPConnection : {
+				//read timer
+				System.out.println(dateFormat.format(date)); 
+				writer.write("[" + dateFormat.format(date) + "]");
+				//write log
+				writer.write(": Peer [" + myInfo.getId() + "] makes a connection to Peer [" + opPeer.getId() + "].");
+				writer.newLine();
+				writer.close();
+			}
+			break;
+			case ChangeOfPreferredNeighbor :{
+				writer.write("[" + dateFormat.format(date) + "]");
+				//writer.write(": Peer [" + peerID + "] has the preferred neighbors [" + MyTimer + "].");
+			}
+			break;
+			case ChangeOfOptUnchokedNeighbor :{
+				
+			}
+			break;
+			case Unchoking :{
+				writer.write("[" + dateFormat.format(date) + "]");
+				writer.write(": Peer [" + myInfo.getId() + "] is unchoked by [" + opPeer.getId() + "].");
+				writer.newLine();
+				writer.close();
+			}
+			break;
+			case Choking :{
+				writer.write("[" + dateFormat.format(date) + "]");
+				writer.write(": Peer [" + myInfo.getId() + "] is choked by [" + opPeer.getId() + "].");
+				writer.newLine();
+				writer.close();
+			}
+			break;
+			case ReceivingHaveMessage:{
+				//read timer
+				System.out.println(dateFormat.format(date)); 
+				writer.write("[" + dateFormat.format(date) + "]");
+				//write log
+				writer.write(": Peer [" + myInfo.getId() + "] received the 'have' message from Peer [" + opPeer.getId() + "].");
+				writer.newLine();
+				writer.close();
+			}
+			break;
+			case ReceivingInterestedMessage:{
+				//read timer
+				System.out.println(dateFormat.format(date)); 
+				writer.write("[" + dateFormat.format(date) + "]");
+				//write log
+				writer.write(": Peer [" + myInfo.getId() + "] received the 'interested' message from Peer [" + opPeer.getId() + "].");
+				writer.newLine();
+				writer.close();
+			}
+			break;
+			case ReceivingNotInterestedMessage:{
+				//read timer
+				System.out.println(dateFormat.format(date)); 
+				writer.write("[" + dateFormat.format(date) + "]");
+				//write log
+				writer.write(": Peer [" + myInfo.getId() + "] received the 'not interested' message from Peer [" + opPeer.getId() + "].");
+				writer.newLine();
+				writer.close();
+			}
+			break;
+			case DownloadingAPiece :{
+				//read timer
+				System.out.println(dateFormat.format(date)); 
+				writer.write("[" + dateFormat.format(date) + "]");
+				//write log
+				//writer.write(": Peer [" + peerID + "] has downloaded the piece [" + +"] from Peer [" + opPeerID + "].");
+				//writer.newLine();
+				writer.close();
+			}
+			break;
+			case CompletionOfDownload :{
+				//read timer
+				System.out.println(dateFormat.format(date)); 
+				writer.write("[" + dateFormat.format(date) + "]");
+				//write log
+				writer.write(": Peer [" + myInfo.getId() + "] has downloaded the complete file.");
+				writer.newLine();
+				writer.close();
+			}
+			break;
 		}
 	}
 	
