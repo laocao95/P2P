@@ -5,10 +5,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
-
+import custom.Config.LogType;
 import custom.Config.MessageType;
 import model.Connection;
 import model.Message;
+import model.PeerInfo;
 
 public class MyTimer extends Thread{
 	private List<Connection> connectionList;
@@ -19,14 +20,17 @@ public class MyTimer extends Thread{
 	private long lastUnchokingTime;
 	private long lastOptimisticUnchokingTime;
 	private boolean startFlag;
+	private int maxNeighborNum;
 	
 	public MyTimer(List<Connection> connectionList) {
 		this.connectionList = connectionList;
 		unchokingInterval = ArgReader.getInstance().getUnchokingInterval() * 1000;
 		optimisticUnchokingInterval = ArgReader.getInstance().getOptimisticUnchokingInterval() * 1000;
 		preferedList = new ArrayList<>();
+		optimisticPeer = null;
 		lastUnchokingTime = 0;
 		lastOptimisticUnchokingTime = 0;
+		maxNeighborNum = ArgReader.getInstance().getNumberOfPreferredNeighbors();
 		startFlag = true;
 	}
 	public void startTimer() {
@@ -46,49 +50,75 @@ public class MyTimer extends Thread{
 			long currentMillis = System.currentTimeMillis();
 			//select preferred neighbor
 			if (currentMillis - lastUnchokingTime > unchokingInterval) {
+				//reset timer
 				lastUnchokingTime = currentMillis;
 				List<Connection> interestedList = new ArrayList<>();
 				List<Connection> newPreferedList = new ArrayList<>();
-				//get interest and have speed peers
+				List<PeerInfo> newPreferedNeighbor = new ArrayList<>();
+				//select interest list
 				for (Connection connection : connectionList) {
-					if (connection.getInterestedFlag() && connection.getDownloadingNumOfPeriod() > 0) {
+					if (connection.getInterestedFlag()) {
 						interestedList.add(connection);
 					}
 				}
-				//select new prefer list
-				if (interestedList.size() > 0) {
-					if (interestedList.size() <= ArgReader.getInstance().getNumberOfPreferredNeighbors()) {
-						newPreferedList = interestedList;
-					} else {
-						//sort by downloadingNum
-						Collections.sort(interestedList, new Comparator<Connection>() {
-							@Override
-							public int compare(Connection c1, Connection c2) {
-								return c2.getDownloadingNumOfPeriod() - c1.getDownloadingNumOfPeriod();
+				//check if has entire file
+				if (BitfieldManager.getInstance().isAllReceived(PeerInfoManager.getInstance().getMyInfo())) {
+					//randomly select k new prefer neighbor
+					int k = maxNeighborNum > interestedList.size() ? interestedList.size() : maxNeighborNum;
+					Collections.shuffle(interestedList);
+					for (int i = 0; i < k; i++) {
+						newPreferedList.add(interestedList.get(i));
+					}
+					
+				} else {
+					//don't have entire file, select new prefer list
+					if (interestedList.size() > 0) {
+						if (interestedList.size() <= maxNeighborNum) {
+							newPreferedList = interestedList;
+						} else {
+							//sort by downloadingNum
+							Collections.sort(interestedList, new Comparator<Connection>() {
+								@Override
+								public int compare(Connection c1, Connection c2) {
+									return c2.getDownloadingNumOfPeriod() - c1.getDownloadingNumOfPeriod();
+								}
+							});
+							//add k fast
+							for (int i = 0; i < maxNeighborNum; i++) {
+								newPreferedList.add(interestedList.get(i));
 							}
-						});
-						//add k fast
-						for (int i = 0; i < ArgReader.getInstance().getNumberOfPreferredNeighbors(); i++) {
-							newPreferedList.add(interestedList.get(i));
 						}
 					}
-				}
-				for (Connection connection : newPreferedList) {
-					if (!preferedList.contains(connection)) {
-						//not in previous preferredList, send unchokeMessage
-						connection.sendMessage(new Message(MessageType.UNCHOKE, null));
+					
+					for (Connection connection : newPreferedList) {
+						if (!preferedList.contains(connection)) {
+							//not in previous preferredList, send unchokeMessage
+							connection.sendMessage(new Message(MessageType.UNCHOKE, null));
+						}
+					}
+					
+					for (Connection connection : connectionList) {
+						if (!newPreferedList.contains(connection) && connection.getSendedHandShake()) {
+							//not in new preferredList, send chokeMessage
+							connection.sendMessage(new Message(MessageType.CHOKE, null));
+						}
+					}
+					//reset the all connection downloadingNum to zero
+					for (Connection connection : connectionList) {
+						connection.resetDownloadingNum();
 					}
 				}
-				for (Connection connection : connectionList) {
-					if (!newPreferedList.contains(connection) && connection.getSendedHandShake()) {
-						//not in new preferredList, send chokeMessage
-						connection.sendMessage(new Message(MessageType.CHOKE, null));
+				
+				//write log
+				String logStr = "";
+				for (int i = 0; i < newPreferedList.size(); i++) {
+					Connection connection = newPreferedList.get(i);
+					logStr += connection.getPeerInfo().getId();
+					if (i != newPreferedList.size() - 1) {
+						logStr += ",";
 					}
 				}
-				//reset the all connection downloadingNum to zero
-				for (Connection connection : connectionList) {
-					connection.resetDownloadingNum();
-				}
+				//connectionList.get(0).getLogger().writeLog(Type.wri);
 				//set the newPreferedList as preferedList
 				preferedList = newPreferedList;
 			}

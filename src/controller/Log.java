@@ -8,7 +8,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
 import custom.Config.*;
 
 import custom.Config;
@@ -19,7 +18,9 @@ public class Log {
 	private BufferedWriter writer;
 	private PeerInfo myInfo;
 	private PeerInfo opPeer = null;
-	
+	private static class SingletonHolder {
+		public final static Log instance = new Log();
+	}
 	public Log() {
 		myInfo = PeerInfoManager.getInstance().getMyInfo();
 		filePath = "log_peer_" + myInfo.getId() + ".log";		//file address
@@ -29,6 +30,9 @@ public class Log {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+	public static Log getInstance() {
+		return SingletonHolder.instance;
 	}
 	public void setOpPeer(PeerInfo opPeer) {
 		this.opPeer = opPeer;
