@@ -45,6 +45,17 @@ public class MyTimer extends Thread{
 	public void run() {
 		while(startFlag) {
 			long currentMillis = System.currentTimeMillis();
+			List<Connection> runningConnection = new ArrayList<>();
+			for (Connection connection : connectionList) {
+				if (!connection.getFinish()) {
+					runningConnection.add(connection);
+				}
+			}
+			//if no connection is running, stop timer and exit();
+			if (runningConnection.size() == 0) {
+				System.exit(0);
+			}
+			
 			//select preferred neighbor
 			if (currentMillis - lastUnchokingTime > unchokingInterval) {
 				//reset timer
@@ -52,7 +63,8 @@ public class MyTimer extends Thread{
 				List<Connection> interestedList = new ArrayList<>();
 				List<Connection> newPreferedList = new ArrayList<>();
 				//select interest list
-				for (Connection connection : connectionList) {
+				
+				for (Connection connection : runningConnection) {
 					if (connection.getInterestedFlag()) {
 						interestedList.add(connection);
 					}

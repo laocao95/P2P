@@ -29,8 +29,9 @@ public class MessageHandler {
 			PeerInfo peerInfo = PeerInfoManager.getInstance().getPeerInfoById(peerId);
 			connect.setOpPeer(peerInfo);
 			connect.setReceivedHandShake();
-			connect.getLogger().writeLog(LogType.TCPConnection, peerInfo, null);
+			Log.getInstance().writeLog(LogType.TCPConnection, peerInfo, null);
 			System.out.println("receive handshake from " + connect.getOpPeer().getId());
+
 			//send handshake
 			sendHandShakeMessage();
 			//send bitfield
@@ -135,14 +136,21 @@ public class MessageHandler {
 		byte[] payLoad = have.getPayload();
 		int pieceNum = Util.Byte2Int(payLoad);
 		PeerInfo peerInfo = connect.getOpPeer();
+		//update opPeer bitfield
 		BitfieldManager.getInstance().updateBitfield(peerInfo, pieceNum);
-		if (BitfieldManager.getInstance().comparePeerInfo(peerInfo)){
-			Message interested = new Message(MessageType.INTERESTED, null);
-			connect.sendMessage(interested);
-		}
-		else{
-			Message notInterested = new Message(MessageType.NOT_INTERESTED, null);
-			connect.sendMessage(notInterested);
+		//check opPeer and me receive all piece
+		if (BitfieldManager.getInstance().isAllReceived(peerInfo) && 
+				BitfieldManager.getInstance().isAllReceived(PeerInfoManager.getInstance().getMyInfo())) {
+			connect.setFinish();
+		} else {
+			if (BitfieldManager.getInstance().comparePeerInfo(peerInfo)){
+				Message interested = new Message(MessageType.INTERESTED, null);
+				connect.sendMessage(interested);
+			}
+			else{
+				Message notInterested = new Message(MessageType.NOT_INTERESTED, null);
+				connect.sendMessage(notInterested);
+			}
 		}
 	}
 	
@@ -196,10 +204,6 @@ public class MessageHandler {
 		PeerInfo peerInfo = PeerInfoManager.getInstance().getMyInfo();
 		BitfieldManager.getInstance().updateBitfield(peerInfo, pieceNum);			//update Bitfield
 		Log.getInstance().writeLog(LogType.DownloadingAPiece, connect.getOpPeer(), pieceNum);
-		if (BitfieldManager.getInstance().isAllReceived(peerInfo)) {
-			FileManager.getInstance().renameTemp();
-			Log.getInstance().writeLog(LogType.CompletionOfDownload, connect.getOpPeer(), null);
-		}
 		//broadcast have message
 		for (Connection connection : connectionList) {
 			//ensure peer receive handshake first
@@ -208,7 +212,16 @@ public class MessageHandler {
 				connection.sendMessage(have);
 			}
 		}
-		if (connect.getpeerChokeMe() == false){
+		//check whether receive all piece
+		if (BitfieldManager.getInstance().isAllReceived(peerInfo)) {
+			FileManager.getInstance().renameTemp();
+			Log.getInstance().writeLog(LogType.CompletionOfDownload, connect.getOpPeer(), null);
+			//if opPeer receive all piece
+			if (BitfieldManager.getInstance().isAllReceived(connect.getOpPeer())) {
+				connect.setFinish(); //stop read message for this connection
+			}
+		}
+		else if (connect.getpeerChokeMe() == false){
 			int resultOfCAC;
 			resultOfCAC = BitfieldManager.getInstance().compareAndchoose(connect.getOpPeer());
 			if(resultOfCAC == -1) {

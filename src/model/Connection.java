@@ -5,7 +5,6 @@ import java.util.*;
 import controller.*;
 import custom.Util;
 import custom.Config.*;
-
 public class Connection extends Thread{
 	private Socket socket;
 	private PeerInfo opPeerInfo = null;
@@ -83,8 +82,8 @@ public class Connection extends Thread{
 					}
 					break;
 					case HAVE: {
-						messageHandler.handleHaveMessage(message);
 						log.writeLog(LogType.ReceivingHaveMessage, opPeerInfo, null);
+						messageHandler.handleHaveMessage(message);
 					}
 					break;
 					case BITFIELD: {
@@ -125,6 +124,10 @@ public class Connection extends Thread{
 
 	public void sendMessage(Message message) {
 		try {
+			//ensure not to send message after socket close
+			if (correspondingPeersCompleted) {
+				return;
+			}
 			outputStream.write(message.toBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -163,8 +166,11 @@ public class Connection extends Thread{
 	public boolean getSendedHandShake(){
 		return sendedHandShake;
 	}
-	public Log getLogger() {
-		return log;
+	public void setFinish() {
+		correspondingPeersCompleted = true;
+	}
+	public boolean getFinish() {
+		return correspondingPeersCompleted;
 	}
 
 	public Message readMessage() throws Exception{
@@ -227,7 +233,8 @@ public class Connection extends Thread{
 		return peerChokeMe;
 	}
 	
-	public void close() throws IOException {
+	public void close() throws Exception {
+		Thread.sleep(500);
 		socket.close();
 	}
 }
