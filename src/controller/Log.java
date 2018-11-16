@@ -27,7 +27,7 @@ public class Log {
 	public static Log getInstance() {
 		return SingletonHolder.instance;
 	}
-	public void writeLog(LogType logType, PeerInfo opPeer, Object args) {
+	synchronized public void writeLog(LogType logType, PeerInfo opPeer, Object args) {
 		try {
 			writer = new BufferedWriter(new FileWriter(filePath, true));
 			System.out.println("start write log.");
@@ -48,11 +48,15 @@ public class Log {
 					writer.write("[" + dateFormat.format(date) + "]");
 					String preferredNeighbour = (String) args;
 					writer.write(": Peer [" + myInfo.getId() + "] has the preferred neighbors [" + preferredNeighbour + "].");
+					writer.newLine();
+					writer.close();
 				}
 				break;
 				case ChangeOfOptUnchokedNeighbor :{
 					writer.write("[" + dateFormat.format(date) + "]");
 					writer.write(": Peer [" + myInfo.getId() + "] has the optimistically unchoked neighbor [Optimistically unchoked neighbour " + opPeer.getId() + "].");
+					writer.newLine();
+					writer.close();
 				}
 				break;
 				case Unchoking :{

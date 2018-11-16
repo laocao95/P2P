@@ -39,7 +39,7 @@ public class MessageHandler {
 			//I am the handshake initiator, no need to send handshake again
 			connect.setReceivedHandShake();
 			System.out.println("receive handshake from " + connect.getPeerInfo().getId());
-		}	
+		}
 	}
 	
 	public void sendHandShakeMessage() throws Exception{

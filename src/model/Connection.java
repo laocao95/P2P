@@ -124,16 +124,11 @@ public class Connection extends Thread{
 	}
 
 	public void sendMessage(Message message) {
-		
-		new Thread() {
-			public void run() {
-				try {
-					outputStream.write(message.toBytes());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}.start();
+		try {
+			outputStream.write(message.toBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	public InputStream getInputStream() {
 		return inputStream;
