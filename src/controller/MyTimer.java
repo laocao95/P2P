@@ -104,7 +104,7 @@ public class MyTimer extends Thread{
 						}
 					}
 					
-					for (Connection connection : connectionList) {
+					for (Connection connection : runningConnection) {
 						if (!newPreferedList.contains(connection) && connection.getSendedHandShake()) {
 							//not in new preferredList, send chokeMessage
 							connection.sendMessage(new Message(MessageType.CHOKE, null));
@@ -135,7 +135,7 @@ public class MyTimer extends Thread{
 			if (currentMillis - lastOptimisticUnchokingTime > optimisticUnchokingInterval) {
 				List<Connection> interestedButNotInPreferredList = new ArrayList<>();
 				lastOptimisticUnchokingTime = currentMillis;
-				for (Connection connection : connectionList) {
+				for (Connection connection : runningConnection) {
 					//confirm the connection already finished handShake
 					if (connection.getInterestedFlag() && !preferedList.contains(connection)) {
 						interestedButNotInPreferredList.add(connection);
