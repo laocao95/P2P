@@ -219,8 +219,11 @@ public class MessageHandler {
 			Message notInterested = new Message(MessageType.NOT_INTERESTED, null);	//Not interested
 			connect.sendMessage(notInterested);
 			//if opPeer receive all piece
-			if (BitfieldManager.getInstance().isAllReceived(connect.getOpPeer())) {
-				connect.setFinish(); //stop read message for this connection
+			for (Connection connection : connectionList) {
+				if (BitfieldManager.getInstance().isAllReceived(connection.getOpPeer())) {
+					System.out.println("enter close socket " + connect.getOpPeer().getId());
+					connection.setFinish();
+				}
 			}
 		}
 		else if (connect.getpeerChokeMe() == false){
