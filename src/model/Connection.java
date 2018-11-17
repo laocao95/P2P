@@ -236,5 +236,6 @@ public class Connection extends Thread{
 	public void close() throws Exception {
 		Thread.sleep(500);
 		socket.close();
+		System.out.println("close socket with " + opPeerInfo.getId());
 	}
 }

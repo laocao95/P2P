@@ -97,23 +97,23 @@ public class MyTimer extends Thread{
 							}
 						}
 					}
-					for (Connection connection : newPreferedList) {
-						if (!preferedList.contains(connection)) {
-							//not in previous preferredList, send unchokeMessage
-							connection.sendMessage(new Message(MessageType.UNCHOKE, null));
-						}
+				}
+				for (Connection connection : newPreferedList) {
+					if (!preferedList.contains(connection)) {
+						//not in previous preferredList, send unchokeMessage
+						connection.sendMessage(new Message(MessageType.UNCHOKE, null));
 					}
-					
-					for (Connection connection : runningConnection) {
-						if (!newPreferedList.contains(connection) && connection.getSendedHandShake()) {
-							//not in new preferredList, send chokeMessage
-							connection.sendMessage(new Message(MessageType.CHOKE, null));
-						}
+				}
+				
+				for (Connection connection : runningConnection) {
+					if (!newPreferedList.contains(connection) && connection.getSendedHandShake()) {
+						//not in new preferredList, send chokeMessage
+						connection.sendMessage(new Message(MessageType.CHOKE, null));
 					}
-					//reset the all connection downloadingNum to zero
-					for (Connection connection : connectionList) {
-						connection.resetDownloadingNum();
-					}
+				}
+				//reset the all connection downloadingNum to zero
+				for (Connection connection : connectionList) {
+					connection.resetDownloadingNum();
 				}
 				
 				//write log
