@@ -53,6 +53,7 @@ public class MyTimer extends Thread{
 			}
 			//if no connection is running, stop timer and exit();
 			if (runningConnection.size() == 0) {
+				Log.getInstance().writeLog(LogType.TestLog, null, "close program. connectionSize" + connectionList.size());
 				System.exit(0);
 			}
 			
