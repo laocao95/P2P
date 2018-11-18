@@ -225,6 +225,7 @@ public class MessageHandler {
 			if (connection.getSendedHandShake() && !connection.getFinish()) {
 				Message have = new Message(MessageType.HAVE, payload);					//send have Piece number
 				connection.sendMessage(have);
+				Log.getInstance().writeLog(LogType.TestLog, null, "send have to " + connect.getOpPeer().getId());
 			}
 		}
 		//check whether close socket
@@ -232,7 +233,8 @@ public class MessageHandler {
 			//if opPeer receive all piece
 			for (Connection connection : connectionList) {
 				if (BitfieldManager.getInstance().isAllReceived(connection.getOpPeer())) {
-					System.out.println("enter close socket " + connect.getOpPeer().getId());
+					Log.getInstance().writeLog(LogType.TestLog, null, "enter close socket " + connect.getOpPeer().getId());
+					//System.out.println("enter close socket " + connect.getOpPeer().getId());
 					connection.setFinish();
 				}
 			}
