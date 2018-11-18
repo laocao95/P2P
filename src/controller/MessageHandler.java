@@ -141,7 +141,7 @@ public class MessageHandler {
 		//check opPeer and me receive all piece
 		if (BitfieldManager.getInstance().isAllReceived(peerInfo) && 
 				BitfieldManager.getInstance().isAllReceived(PeerInfoManager.getInstance().getMyInfo())) {
-			Log.getInstance().writeLog(LogType.TestLog, null, "receive all have " + peerInfo.getId());
+			Log.getInstance().writeLog(LogType.TestLog, null, "receive all have " + peerInfo.getId() + "for piece " + pieceNum);
 			connect.setFinish();
 		} else {
 			if (BitfieldManager.getInstance().comparePeerInfo(peerInfo)){
