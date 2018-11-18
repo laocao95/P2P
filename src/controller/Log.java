@@ -124,6 +124,16 @@ public class Log {
 					writer.close();
 				}
 				break;
+				case TestLog :{
+					//read timer
+					System.out.println(dateFormat.format(date)); 
+					writer.write("[" + dateFormat.format(date) + "]");
+					//write log
+					writer.write((String) args);
+					writer.newLine();
+					writer.close();
+				}
+				break;
 			}
 		} catch(Exception e) {
 				e.printStackTrace();

@@ -2,7 +2,7 @@ package controller;
 
 import model.*;
 import custom.*;
-import custom.Config.MessageType;
+
 import java.util.List;
 import custom.Config.*;
 
@@ -141,6 +141,7 @@ public class MessageHandler {
 		//check opPeer and me receive all piece
 		if (BitfieldManager.getInstance().isAllReceived(peerInfo) && 
 				BitfieldManager.getInstance().isAllReceived(PeerInfoManager.getInstance().getMyInfo())) {
+			Log.getInstance().writeLog(LogType.TestLog, null, "receive all have");
 			connect.setFinish();
 		} else {
 			if (BitfieldManager.getInstance().comparePeerInfo(peerInfo)){

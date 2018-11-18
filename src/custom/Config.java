@@ -23,5 +23,6 @@ public class Config {
 		ReceivingNotInterestedMessage, //7
 		DownloadingAPiece, //8
 		CompletionOfDownload, //9
+		TestLog
 	}
 }
