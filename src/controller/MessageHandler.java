@@ -224,7 +224,7 @@ public class MessageHandler {
 		for (Connection connection : connectionList) {
 			//ensure peer send handshake first and connection is still running
 			if (connection.getSendedHandShake() && !connection.getFinish()) {
-				Log.getInstance().writeLog(LogType.TestLog, null, "send have to " + connection.getId() + " for piece " + pieceNum);
+				Log.getInstance().writeLog(LogType.TestLog, null, "send have to " + connection.getOpPeer().getId() + " for piece " + pieceNum);
 				Message have = new Message(MessageType.HAVE, payload);					//send have Piece number
 				connection.sendMessage(have);
 				//Log.getInstance().writeLog(LogType.TestLog, null, "send have to " + connect.getOpPeer().getId() + "for piece " + pieceNum);
@@ -236,7 +236,7 @@ public class MessageHandler {
 			Thread.sleep(1000);
 			for (Connection connection : connectionList) {
 				if (BitfieldManager.getInstance().isAllReceived(connection.getOpPeer())) {
-					Log.getInstance().writeLog(LogType.TestLog, null, "enter close socket " + connect.getOpPeer().getId());
+					Log.getInstance().writeLog(LogType.TestLog, null, "enter close socket " + connection.getOpPeer().getId());
 					//System.out.println("enter close socket " + connect.getOpPeer().getId());
 					connection.setFinish();
 				}
