@@ -141,7 +141,7 @@ public class MessageHandler {
 		//check opPeer and me receive all piece
 		if (BitfieldManager.getInstance().isAllReceived(peerInfo) && 
 				BitfieldManager.getInstance().isAllReceived(PeerInfoManager.getInstance().getMyInfo())) {
-			Log.getInstance().writeLog(LogType.TestLog, null, "receive all have " + peerInfo.getId() + "for piece " + pieceNum);
+			Log.getInstance().writeLog(LogType.TestLog, null, "receive all have " + peerInfo.getId());
 			connect.setFinish();
 		} else {
 			if (BitfieldManager.getInstance().comparePeerInfo(peerInfo)){
@@ -223,9 +223,10 @@ public class MessageHandler {
 		for (Connection connection : connectionList) {
 			//ensure peer send handshake first and connection is still running
 			if (connection.getSendedHandShake() && !connection.getFinish()) {
+				Log.getInstance().writeLog(LogType.TestLog, null, "send have to " + connect.getOpPeer().getId() + "for piece " + pieceNum);
 				Message have = new Message(MessageType.HAVE, payload);					//send have Piece number
 				connection.sendMessage(have);
-				Log.getInstance().writeLog(LogType.TestLog, null, "send have to " + connect.getOpPeer().getId());
+				//Log.getInstance().writeLog(LogType.TestLog, null, "send have to " + connect.getOpPeer().getId() + "for piece " + pieceNum);
 			}
 		}
 		//check whether close socket
