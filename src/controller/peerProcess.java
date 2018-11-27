@@ -26,6 +26,9 @@ public class peerProcess {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+		//start timer
+		MyTimer mytimer = new MyTimer(peerConnectionList);
+		mytimer.startTimer();
 
 		//wait for peers connect later
 		try {
@@ -36,10 +39,6 @@ public class peerProcess {
 				
 				peerConnectionList.add(new Connection(socket, null, this));
 			}
-
-			//start timer. Temporarily begin timer after all peers connecting
-			MyTimer mytimer = new MyTimer(peerConnectionList);
-			mytimer.startTimer();
 		
 		} catch(Exception e) {
 			e.printStackTrace();

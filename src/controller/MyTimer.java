@@ -44,6 +44,10 @@ public class MyTimer extends Thread{
 	@Override
 	public void run() {
 		while(startFlag) {
+			//first machine should wait for connection and then start timer.
+			if (connectionList.size() == 0) {
+				continue;
+			}
 			long currentMillis = System.currentTimeMillis();
 			List<Connection> runningConnection = new ArrayList<>();
 			for (Connection connection : connectionList) {
@@ -51,8 +55,8 @@ public class MyTimer extends Thread{
 					runningConnection.add(connection);
 				}
 			}
-			//if no connection is running, stop timer and exit();
-			if (runningConnection.size() == 0) {
+			//if no connection is running, and all peers already login, stop timer and exit();
+			if (runningConnection.size() == 0 && connectionList.size() == PeerInfoManager.getInstance().getSize()) {
 				Log.getInstance().writeLog(LogType.TestLog, null, "close program. connectionSize" + connectionList.size());
 				System.exit(0);
 			}

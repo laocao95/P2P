@@ -51,6 +51,8 @@ public class MessageHandler {
 		
 		connect.sendMessage(message);
 		
+		Thread.sleep(500);
+		
 		connect.setSendedHandShake();
 		
 		System.out.println("send handshake message to " + connect.getOpPeer().getId());
