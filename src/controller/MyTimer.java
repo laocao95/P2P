@@ -46,7 +46,7 @@ public class MyTimer extends Thread{
 		while(startFlag) {
 			//first machine should wait for connection and then start timer.
 			int connectionSize = connectionList.size();
-
+			System.out.print("");
 			if (connectionSize == 0) {
 				continue;
 			}
