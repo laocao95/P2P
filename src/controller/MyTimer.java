@@ -119,10 +119,11 @@ public class MyTimer extends Thread{
 					}
 				}
 				//reset the all connection downloadingNum to zero
-				for (Connection connection : connectionList) {
-					connection.resetDownloadingNum();
-				}
 				
+				for (int i = 0; i < connectionList.size(); i++) {
+					connectionList.get(i).resetDownloadingNum();
+				}
+
 				//write log
 				String logStr = "";
 				for (int i = 0; i < newPreferedList.size(); i++) {
