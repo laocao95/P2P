@@ -197,6 +197,7 @@ public class MessageHandler {
 	}
 	
 	public void handlePieceMessage(Message message, List<Connection> connectionList) throws Exception{
+		int connectionSize = connectionList.size();
 		Message piece = (Message)message;
 		byte[] payload = piece.getPayload();
 		byte[] pieceIndex = new byte[4];
@@ -215,34 +216,57 @@ public class MessageHandler {
 			FileManager.getInstance().renameTemp();
 			Log.getInstance().writeLog(LogType.CompletionOfDownload, connect.getOpPeer(), null);
 			//broadcast not interest
-			for (Connection connection : connectionList) {
-				if (connection.getSendedHandShake() && !connection.getFinish()) {
-					Message notInterested = new Message(MessageType.NOT_INTERESTED, null);	//Not interested
-					connection.sendMessage(notInterested);
+//			for (Connection connection : connectionList) {
+//				if (connection.getSendedHandShake() && !connection.getFinish()) {
+//					Message notInterested = new Message(MessageType.NOT_INTERESTED, null);	//Not interested
+//					connection.sendMessage(notInterested);
+//				}
+//			}
+			for (int i = 0; i < connectionSize; i++) {
+				if (connectionList.get(i).getSendedHandShake() && !connectionList.get(i).getFinish()) {
+					Message notInterested = new Message(MessageType.NOT_INTERESTED, null);	
+					connectionList.get(i).sendMessage(notInterested);
 				}
 			}
 		}
 		//broadcast have message
-		for (Connection connection : connectionList) {
+//		for (Connection connection : connectionList) {
+//			//ensure peer send handshake first and connection is still running
+//			if (connection.getSendedHandShake() && !connection.getFinish()) {
+//				Log.getInstance().writeLog(LogType.TestLog, null, "send have to " + connection.getOpPeer().getId() + " for piece " + pieceNum);
+//				Message have = new Message(MessageType.HAVE, payload);					//send have Piece number
+//				connection.sendMessage(have);
+//				//Log.getInstance().writeLog(LogType.TestLog, null, "send have to " + connect.getOpPeer().getId() + "for piece " + pieceNum);
+//			}
+//		}
+		
+		for (int i = 0; i < connectionSize; i++) {
 			//ensure peer send handshake first and connection is still running
-			if (connection.getSendedHandShake() && !connection.getFinish()) {
-				Log.getInstance().writeLog(LogType.TestLog, null, "send have to " + connection.getOpPeer().getId() + " for piece " + pieceNum);
+			if (connectionList.get(i).getSendedHandShake() && !connectionList.get(i).getFinish()) {
+				Log.getInstance().writeLog(LogType.TestLog, null, "send have to " + connectionList.get(i).getOpPeer().getId() + " for piece " + pieceNum);
 				Message have = new Message(MessageType.HAVE, payload);					//send have Piece number
-				connection.sendMessage(have);
-				//Log.getInstance().writeLog(LogType.TestLog, null, "send have to " + connect.getOpPeer().getId() + "for piece " + pieceNum);
+				connectionList.get(i).sendMessage(have);
 			}
 		}
+		
 		//check whether close socket
 		if (BitfieldManager.getInstance().isAllReceived(peerInfo)) {
 			//if opPeer receive all piece
 			Thread.sleep(1000);
-			for (Connection connection : connectionList) {
-				if (BitfieldManager.getInstance().isAllReceived(connection.getOpPeer())) {
-					Log.getInstance().writeLog(LogType.TestLog, null, "enter close socket " + connection.getOpPeer().getId());
-					//System.out.println("enter close socket " + connect.getOpPeer().getId());
-					connection.setFinish();
+//			for (Connection connection : connectionList) {
+//				if (BitfieldManager.getInstance().isAllReceived(connection.getOpPeer())) {
+//					Log.getInstance().writeLog(LogType.TestLog, null, "enter close socket " + connection.getOpPeer().getId());
+//					//System.out.println("enter close socket " + connect.getOpPeer().getId());
+//					connection.setFinish();
+//				}
+//			}	
+			for (int i = 0; i < connectionSize; i++) {
+				if (BitfieldManager.getInstance().isAllReceived(connectionList.get(i).getOpPeer())) {
+					Log.getInstance().writeLog(LogType.TestLog, null, "enter close socket " + connectionList.get(i).getOpPeer().getId());
+					connectionList.get(i).setFinish();
 				}
 			}
+			
 		}
 		else if (connect.getpeerChokeMe() == false){
 			int resultOfCAC;

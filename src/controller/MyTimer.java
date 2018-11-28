@@ -45,21 +45,24 @@ public class MyTimer extends Thread{
 	public void run() {
 		while(startFlag) {
 			//first machine should wait for connection and then start timer.
-			if (connectionList.size() == 0) {
+			int connectionSize = connectionList.size();
+
+			if (connectionSize == 0) {
 				continue;
 			}
 			long currentMillis = System.currentTimeMillis();
 			List<Connection> runningConnection = new ArrayList<>();
-		
-			for (int i = 0; i < connectionList.size(); i++) {
+			
+			
+			for (int i = 0; i < connectionSize; i++) {
 				if (!connectionList.get(i).getFinish()) {
 					runningConnection.add(connectionList.get(i));
 				}
 			}
 			
 			//if no connection is running, and all peers already login, stop timer and exit();
-			if (runningConnection.size() == 0 && connectionList.size() == PeerInfoManager.getInstance().getSize() - 1) {
-				Log.getInstance().writeLog(LogType.TestLog, null, "close program. connectionSize" + connectionList.size());
+			if (runningConnection.size() == 0 && connectionSize == PeerInfoManager.getInstance().getSize() - 1) {
+				Log.getInstance().writeLog(LogType.TestLog, null, "close program. connectionSize" + connectionSize);
 				System.exit(0);
 			}
 			
@@ -120,7 +123,7 @@ public class MyTimer extends Thread{
 				}
 				//reset the all connection downloadingNum to zero
 				
-				for (int i = 0; i < connectionList.size(); i++) {
+				for (int i = 0; i < connectionSize; i++) {
 					connectionList.get(i).resetDownloadingNum();
 				}
 
