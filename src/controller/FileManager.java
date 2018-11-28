@@ -17,7 +17,7 @@ public class FileManager {
 		return SingletonHolder.instance;
 	}
 	public void setFile(PeerInfo peerInfo) {
-		this.filePath = "peer_" + peerInfo.getId() + "/" + ArgReader.getInstance().getfileName();		//file address
+		this.filePath = "./../peer_" + peerInfo.getId() + "/" + ArgReader.getInstance().getfileName();		//file address
 		this.file = new File(filePath);
 		if(peerInfo.getHasFile()) {				//When we are supposed to have the file, we do
 			if(!file.exists()) {
@@ -26,7 +26,7 @@ public class FileManager {
 			}
 		}
 		else {						//When we are not supposed to have the file, we do
-			File dir = new File("peer_" + peerInfo.getId());
+			File dir = new File("./../peer_" + peerInfo.getId());
 			dir.mkdir();
 			file.delete();			//Delete and start writing to .temp file to keep intention clean
 			file = new File(filePath + ".temp");
