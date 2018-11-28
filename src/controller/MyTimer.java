@@ -50,11 +50,13 @@ public class MyTimer extends Thread{
 			}
 			long currentMillis = System.currentTimeMillis();
 			List<Connection> runningConnection = new ArrayList<>();
-			for (Connection connection : connectionList) {
-				if (!connection.getFinish()) {
-					runningConnection.add(connection);
+		
+			for (int i = 0; i < connectionList.size(); i++) {
+				if (!connectionList.get(i).getFinish()) {
+					runningConnection.add(connectionList.get(i));
 				}
 			}
+			
 			//if no connection is running, and all peers already login, stop timer and exit();
 			if (runningConnection.size() == 0 && connectionList.size() == PeerInfoManager.getInstance().getSize() - 1) {
 				Log.getInstance().writeLog(LogType.TestLog, null, "close program. connectionSize" + connectionList.size());
