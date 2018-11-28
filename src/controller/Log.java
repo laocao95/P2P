@@ -126,12 +126,12 @@ public class Log {
 				break;
 				case TestLog :{
 					//read timer
-					System.out.println(dateFormat.format(date)); 
-					writer.write("[" + dateFormat.format(date) + "]");
-					//write log
-					writer.write((String) args);
-					writer.newLine();
-					writer.close();
+//					System.out.println(dateFormat.format(date)); 
+//					writer.write("[" + dateFormat.format(date) + "]");
+//					//write log
+//					writer.write((String) args);
+//					writer.newLine();
+//					writer.close();
 				}
 				break;
 			}
