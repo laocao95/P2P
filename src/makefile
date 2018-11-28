@@ -15,4 +15,4 @@ all:
 	javac controller/peerProcess.java
 	
 clean:
-	rm -rf ./bin/controller/*.class ./bin/custom/*.class ./bin/model/*.class  *.log
+	rm -rf ./bin/controller/*.class ./bin/custom/*.class ./bin/model/*.class  *.log controller/*.class model/*.class custom/*.class
